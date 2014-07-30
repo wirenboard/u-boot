@@ -59,6 +59,7 @@ static void mxs_power_clock2pll(void)
 
 static void mxs_power_set_auto_restart(void)
 {
+	printf("%s\n", "mxs_power_set_auto_restart");
 	struct mxs_rtc_regs *rtc_regs =
 		(struct mxs_rtc_regs *)MXS_RTC_BASE;
 
@@ -97,6 +98,7 @@ static void mxs_power_set_auto_restart(void)
  */
 static void mxs_power_set_linreg(void)
 {
+	printf("%s\n", "mxs_power_set_linreg");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -127,6 +129,7 @@ static int mxs_get_batt_volt(void)
 	volt &= POWER_BATTMONITOR_BATT_VAL_MASK;
 	volt >>= POWER_BATTMONITOR_BATT_VAL_OFFSET;
 	volt *= 8;
+	printf("mxs_get_batt_volt volt=%d mV\n", volt);
 	return volt;
 }
 
@@ -150,6 +153,7 @@ static int mxs_is_batt_ready(void)
  */
 static int mxs_is_batt_good(void)
 {
+	printf("%s\n", "mxs_is_batt_good");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t volt = mxs_get_batt_volt();
@@ -237,9 +241,6 @@ static void mxs_src_power_init(void)
 			POWER_LOOPCTRL_RCSCALE_THRESH |
 			POWER_LOOPCTRL_EN_RCSCALE_8X);
 
-	clrsetbits_le32(&power_regs->hw_power_minpwr,
-			POWER_MINPWR_HALFFETS, POWER_MINPWR_DOUBLE_FETS);
-
 	/* 5V to battery handoff ... FIXME */
 	setbits_le32(&power_regs->hw_power_5vctrl, POWER_5VCTRL_DCDC_XFER);
 	early_delay(30);
@@ -254,6 +255,7 @@ static void mxs_src_power_init(void)
  */
 static void mxs_power_init_4p2_params(void)
 {
+	printf("%s\n", "mxs_power_init_4p2_params");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -284,6 +286,7 @@ static void mxs_power_init_4p2_params(void)
  */
 static void mxs_enable_4p2_dcdc_input(int xfer)
 {
+	printf("%s\n", "mxs_enable_4p2_dcdc_input");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t tmp, vbus_thresh, vbus_5vdetect, pwd_bo;
@@ -386,6 +389,7 @@ static void mxs_enable_4p2_dcdc_input(int xfer)
  */
 static void mxs_power_init_4p2_regulator(void)
 {
+	printf("%s\n", "mxs_power_init_4p2_regulator");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t tmp, tmp2;
@@ -476,6 +480,7 @@ static void mxs_power_init_4p2_regulator(void)
  */
 static void mxs_power_init_dcdc_4p2_source(void)
 {
+	printf("%s\n", "mxs_power_init_dcdc_4p2_source");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -504,6 +509,7 @@ static void mxs_power_init_dcdc_4p2_source(void)
  */
 static void mxs_power_enable_4p2(void)
 {
+	printf("%s\n", "mxs_power_enable_4p2");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t vdddctrl, vddactrl, vddioctrl;
@@ -528,7 +534,10 @@ static void mxs_power_enable_4p2(void)
 	mxs_power_init_4p2_regulator();
 
 	/* Shutdown battery (none present) */
-	if (!mxs_is_batt_ready()) {
+	//~ if (!mxs_is_batt_ready()) {
+
+	// always shutdown battery
+	if (1) {
 		clrbits_le32(&power_regs->hw_power_dcdc4p2,
 				POWER_DCDC4P2_BO_MASK);
 		writel(POWER_CTRL_DCDC4P2_BO_IRQ,
@@ -571,6 +580,7 @@ static void mxs_power_enable_4p2(void)
  */
 static void mxs_boot_valid_5v(void)
 {
+	printf("%s\n", "mxs_boot_valid_5v");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -614,6 +624,7 @@ static void mxs_powerdown(void)
  */
 static void mxs_batt_boot(void)
 {
+	printf("%s\n", "mxs_batt_boot");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -631,8 +642,6 @@ static void mxs_batt_boot(void)
 
 	writel(POWER_CTRL_ENIRQ_DCDC4P2_BO, &power_regs->hw_power_ctrl_clr);
 
-	clrsetbits_le32(&power_regs->hw_power_minpwr,
-			POWER_MINPWR_HALFFETS, POWER_MINPWR_DOUBLE_FETS);
 
 	mxs_power_set_linreg();
 
@@ -655,7 +664,6 @@ static void mxs_batt_boot(void)
 		POWER_5VCTRL_CHARGE_4P2_ILIMIT_MASK,
 		0x8 << POWER_5VCTRL_CHARGE_4P2_ILIMIT_OFFSET);
 
-	mxs_power_enable_4p2();
 }
 
 /**
@@ -668,6 +676,7 @@ static void mxs_batt_boot(void)
  */
 static void mxs_handle_5v_conflict(void)
 {
+	printf("%s\n", "mxs_handle_5v_conflict");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t tmp;
@@ -710,6 +719,7 @@ static void mxs_handle_5v_conflict(void)
  */
 static void mxs_5v_boot(void)
 {
+	printf("%s\n", "mxs_5v_boot");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -739,6 +749,7 @@ static void mxs_5v_boot(void)
  */
 static void mxs_init_batt_bo(void)
 {
+	printf("%s\n", "mxs_init_batt_bo");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -759,6 +770,7 @@ static void mxs_init_batt_bo(void)
  */
 static void mxs_switch_vddd_to_dcdc_source(void)
 {
+	printf("%s\n", "mxs_switch_vddd_to_dcdc_source");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -782,6 +794,7 @@ static void mxs_switch_vddd_to_dcdc_source(void)
  */
 static void mxs_power_configure_power_source(void)
 {
+	printf("%s\n", "mxs_power_configure_power_source");
 	int batt_ready, batt_good;
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
@@ -794,20 +807,36 @@ static void mxs_power_configure_power_source(void)
 		batt_ready = mxs_is_batt_ready();
 		if (batt_ready) {
 			/* 5V source detected, good battery detected. */
-			mxs_batt_boot();
+			printf("%s\n", "/* 5V source detected, good battery detected. */");
+
+			/* Wiren Board: always use 5V if present */
+			mxs_5v_boot(); /*instead of mxs_batt_boot(); */
 		} else {
+			printf("%s\n", "not batt_ready");
 			batt_good = mxs_is_batt_good();
 			if (!batt_good) {
 				/* 5V source detected, bad battery detected. */
+				printf("%s\n", "5V source detected, bad battery detected. */");
 				writel(LRADC_CONVERSION_AUTOMATIC,
 					&lradc_regs->hw_lradc_conversion_clr);
 				clrbits_le32(&power_regs->hw_power_battmonitor,
 					POWER_BATTMONITOR_BATT_VAL_MASK);
+			} else {
+				/* some battery is present (i.e. something is really connected to BAT pin /*
+
+				/* Wiren Board:
+				 * wait for battery to charge above LTC4002 trickle charge threshold
+				 * 			 or to discharge completely */
+				while (mxs_get_batt_volt() < 3200) {
+					printf("%s\n", "BAT voltage is too low to boot");
+					early_delay(5000000);
+				}
 			}
 			mxs_5v_boot();
 		}
 	} else {
 		/* 5V not detected, booting from battery. */
+		printf("%s\n", "/* 5V not detected, booting from battery. */");
 		mxs_batt_boot();
 	}
 
@@ -835,6 +864,7 @@ static void mxs_power_configure_power_source(void)
  */
 static void mxs_enable_output_rail_protection(void)
 {
+	printf("%s\n", "mxs_enable_output_rail_protection");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -860,6 +890,7 @@ static void mxs_enable_output_rail_protection(void)
  */
 static int mxs_get_vddio_power_source_off(void)
 {
+	printf("%s\n", "mxs_get_vddio_power_source_off");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t tmp;
@@ -895,6 +926,7 @@ static int mxs_get_vddio_power_source_off(void)
  */
 static int mxs_get_vddd_power_source_off(void)
 {
+	printf("%s\n", "mxs_get_vddd_power_source_off");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t tmp;
@@ -996,6 +1028,7 @@ static const struct mxs_vddx_cfg mxs_vddmem_cfg = {
 static void mxs_power_set_vddx(const struct mxs_vddx_cfg *cfg,
 				uint32_t new_target, uint32_t new_brownout)
 {
+	printf("%s\n", "mxs_power_set_vddx");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t cur_target, diff, bo_int = 0;
@@ -1107,6 +1140,7 @@ static void mxs_ungate_power(void)
  */
 void mxs_power_init(void)
 {
+	printf("%s\n","mxs_power_init");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
