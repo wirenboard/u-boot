@@ -904,7 +904,7 @@ static void mxs_power_configure_power_source(void)
 				clrbits_le32(&power_regs->hw_power_battmonitor,
 					POWER_BATTMONITOR_BATT_VAL_MASK);
 			} else {
-				/* some battery is present (i.e. something is really connected to BAT pin /*
+				/* some battery is present (i.e. something is really connected to BAT pin */
 
 				/* Wiren Board:
 				 * wait for battery to charge above LTC4002 trickle charge threshold
