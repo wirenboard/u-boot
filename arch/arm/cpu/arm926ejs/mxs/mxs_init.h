@@ -26,4 +26,10 @@ uint32_t mxs_mem_get_size(void);
 void mxs_lradc_init(void);
 void mxs_lradc_enable_batt_measurement(void);
 
+
+#define MX23_DEBUG 1
+#define mx23_debug_print(fmt, ...) \
+        do { if (MX23_DEBUG) {printf("%s(): " fmt, __func__, __VA_ARGS__); early_delay(1000); }} while (0)
+
+
 #endif	/* __M28_INIT_H__ */
