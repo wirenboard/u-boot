@@ -26,6 +26,9 @@
 #define mx23_debug_print(fmt, ...) \
         do { if (MX23_DEBUG) {printf("%s(): " fmt, __func__, __VA_ARGS__); early_delay(1000); }} while (0)
 
+
+//~ #define CONFIG_PWR_NOBAT
+
 /**
  * mxs_power_clock2xtal() - Switch CPU core clock source to 24MHz XTAL
  *
@@ -602,8 +605,18 @@ static void mxs_power_enable_4p2(void)
 	/* Shutdown battery (none present) */
 	//~ if (!mxs_is_batt_ready()) {
 
+
+	#if defined(CONFIG_PWR_NOBAT)
 	// always shutdown battery
-	if (1) {
+		clrbits_le32(&power_regs->hw_power_dcdc4p2,
+				POWER_DCDC4P2_BO_MASK);
+		writel(POWER_CTRL_DCDC4P2_BO_IRQ,
+				&power_regs->hw_power_ctrl_clr);
+		writel(POWER_CTRL_ENIRQ_DCDC4P2_BO,
+				&power_regs->hw_power_ctrl_clr);
+	#else
+
+	if (!mxs_is_batt_ready()) {
 		clrbits_le32(&power_regs->hw_power_dcdc4p2,
 				POWER_DCDC4P2_BO_MASK);
 		writel(POWER_CTRL_DCDC4P2_BO_IRQ,
@@ -611,6 +624,7 @@ static void mxs_power_enable_4p2(void)
 		writel(POWER_CTRL_ENIRQ_DCDC4P2_BO,
 				&power_regs->hw_power_ctrl_clr);
 	}
+	#endif
 
 
 
@@ -725,6 +739,9 @@ static void mxs_batt_boot(void)
 	writel(POWER_CTRL_ENIRQ_DCDC4P2_BO, &power_regs->hw_power_ctrl_clr);
 
 
+	clrsetbits_le32(&power_regs->hw_power_minpwr,
+		POWER_MINPWR_HALFFETS, POWER_MINPWR_DOUBLE_FETS);
+
 	mxs_power_set_linreg();
 
 	clrbits_le32(&power_regs->hw_power_vdddctrl,
@@ -746,6 +763,7 @@ static void mxs_batt_boot(void)
 		POWER_5VCTRL_CHARGE_4P2_ILIMIT_MASK,
 		0x8 << POWER_5VCTRL_CHARGE_4P2_ILIMIT_OFFSET);
 
+	mxs_power_enable_4p2();
 }
 
 /**
@@ -916,7 +934,11 @@ static void mxs_power_configure_power_source(void)
 			mx23_debug_print("%s\n", "/* 5V source detected, good battery detected. */");
 
 			/* Wiren Board: always use 5V if present */
-			mxs_5v_boot(); /*instead of mxs_batt_boot(); */
+			#if defined(CONFIG_PWR_NOBAT)
+				mxs_5v_boot(); /*instead of mxs_batt_boot(); */
+			#else
+				mxs_batt_boot();
+			#endif
 		} else {
 			mx23_debug_print("%s\n", "not batt_ready");
 			batt_good = mxs_is_batt_good();
