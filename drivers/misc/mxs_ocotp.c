@@ -125,8 +125,13 @@ static int mxs_ocotp_wait_hclk_ready(void)
 
 	while (--timeout) {
 		reg = readl(&clkctrl_regs->hw_clkctrl_hbus);
+#if defined(CONFIG_MX28)
 		if (!(reg & CLKCTRL_HBUS_ASM_BUSY))
 			break;
+#elif defined(CONFIG_MX23)
+		if (!(reg & CLKCTRL_HBUS_BUSY))
+			break;
+#endif
 	}
 
 	if (!timeout)
