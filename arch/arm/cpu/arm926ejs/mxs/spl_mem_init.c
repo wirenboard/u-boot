@@ -16,7 +16,9 @@
 
 #include "mxs_init.h"
 
-#define CONFIG_DDR_96MHZ
+//~ #define CONFIG_SPL_MXS_DDR_96MHZ
+//~ #define CONFIG_SPL_MXS_DDR_LOWPWR
+//~ #define CONFIG_SPL_MXS_DDR_CL25
 
 
 static uint32_t dram_vals[] = {
@@ -79,7 +81,7 @@ static uint32_t dram_vals[] = {
 #elif defined(CONFIG_MX23)
 
 
-#if defined(CONFIG_DDR_96MHZ)
+#if defined(CONFIG_SPL_MXS_DDR_96MHZ)
 	0x01010001, 0x00010000, 0x01000000, 0x00000001,
 	0x00000101,	0x00000000,	0x00010000,	0x01000001,
 	0x01000000,	0x00000001,	0x07000200,	0x00070202,
@@ -95,17 +97,17 @@ static uint32_t dram_vals[] = {
 	0x01010001, 0x00010100, 0x01000101, 0x00000001,
 
 	0x00000101,
-	#if defined(CONFIG_DDR_LOWPWR)
+	#if defined(CONFIG_SPL_MXS_DDR_LOWPWR)
 		0x00000001,
 	#else
 		0x00000000,
 	#endif
 	0x00010000, 0x01000001,
 
-	#if defined(CONFIG_DDR_CL3)
+	#if defined(CONFIG_SPL_MXS_DDR_CL3)
 		0x00000000, 0x00000001, 0x07000200, 0x00070203, //CL=3
 		0x02020000, 0x06060a01, 0x00000201, 0x02040000, // CL=3
-	#elif defined(CONFIG_DDR_CL25)
+	#elif defined(CONFIG_SPL_MXS_DDR_CL25)
 		0x00000000, 0x00000001, 0x07000200, 0x00070206, //CL=2.5
 		0x02020000, 0x05050a01, 0x00000201, 0x02040000, // CL=2.5
 	#else
@@ -183,7 +185,7 @@ static void mxs_mem_init_clock(void)
 	struct mxs_clkctrl_regs *clkctrl_regs =
 		(struct mxs_clkctrl_regs *)MXS_CLKCTRL_BASE;
 #if defined(CONFIG_MX23)
-	#if defined(CONFIG_DDR_96MHZ)
+	#if defined(CONFIG_SPL_MXS_DDR_96MHZ)
 		const unsigned char divider = 30; //96mhz
 	#else
 		/* Fractional divider for ref_emi is 33 ; 480 * 18 / 33 = 266MHz */
@@ -211,7 +213,7 @@ static void mxs_mem_init_clock(void)
 	early_delay(11000);
 
 
-	#if defined(CONFIG_DDR_96MHZ)
+	#if defined(CONFIG_SPL_MXS_DDR_96MHZ)
 		writel((3 << CLKCTRL_EMI_DIV_EMI_OFFSET) |
 			(1 << CLKCTRL_EMI_DIV_XTAL_OFFSET),
 			&clkctrl_regs->hw_clkctrl_emi);
@@ -319,19 +321,19 @@ static void mx23_mem_init(void)
 	debug("SPL: Initialising mx23 SDRAM Controller\n");
 
 	/* Dump memory settings */
-	#if defined(CONFIG_DDR_96MHZ)
+	#if defined(CONFIG_SPL_MXS_DDR_96MHZ)
 	mx23_debug_print("%s\n", "DDR frequency is 96 MHz");
 	#else
 	mx23_debug_print("%s\n", "DDR frequency is 133 MHz");
 	#endif
 
-	#if defined(CONFIG_DDR_LOWPWR)
+	#if defined(CONFIG_SPL_MXS_DDR_LOWPWR)
 	mx23_debug_print("%s\n", "EN_LOWPOWER_MODE is on");
 	#endif
 
-	#if defined(CONFIG_DDR_CL3)
+	#if defined(CONFIG_SPL_MXS_DDR_CL3)
 	mx23_debug_print("%s\n", "DDR CAS latency=3.0");
-	#elif defined(CONFIG_DDR_CL25)
+	#elif defined(CONFIG_SPL_MXS_DDR_CL25)
 	mx23_debug_print("%s\n", "DDR CAS latency=2.5");
 	#else
 	mx23_debug_print("%s\n", "DDR CAS latency=2.0");

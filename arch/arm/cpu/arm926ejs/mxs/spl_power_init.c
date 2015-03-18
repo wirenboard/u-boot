@@ -27,7 +27,6 @@
         do { if (MX23_DEBUG) {printf("%s(): " fmt, __func__, __VA_ARGS__); early_delay(1000); }} while (0)
 
 
-//~ #define CONFIG_PWR_NOBAT
 
 /**
  * mxs_power_clock2xtal() - Switch CPU core clock source to 24MHz XTAL
@@ -606,7 +605,7 @@ static void mxs_power_enable_4p2(void)
 	//~ if (!mxs_is_batt_ready()) {
 
 
-	#if defined(CONFIG_PWR_NOBAT)
+	#if defined(CONFIG_SPL_MXS_PWR_NOBAT)
 	// always shutdown battery
 		clrbits_le32(&power_regs->hw_power_dcdc4p2,
 				POWER_DCDC4P2_BO_MASK);
@@ -934,7 +933,7 @@ static void mxs_power_configure_power_source(void)
 			mx23_debug_print("%s\n", "/* 5V source detected, good battery detected. */");
 
 			/* Wiren Board: always use 5V if present */
-			#if defined(CONFIG_PWR_NOBAT)
+			#if defined(CONFIG_SPL_MXS_PWR_NOBAT)
 				mxs_5v_boot(); /*instead of mxs_batt_boot(); */
 			#else
 				mxs_batt_boot();
@@ -955,10 +954,13 @@ static void mxs_power_configure_power_source(void)
 				/* Wiren Board:
 				 * wait for battery to charge above LTC4002 trickle charge threshold
 				 * 			 or to discharge completely */
-				while (mxs_get_batt_volt() < 3200) {
-					mx23_debug_print("%s\n", "BAT voltage is too low to boot");
-					early_delay(5000000);
-				}
+
+				#if !defined(CONFIG_SPL_MXS_PWR_NOBAT) && defined(CONFIG_SPL_MXS_PWR_LTC4002)
+					while (mxs_get_batt_volt() < 3200) {
+						mx23_debug_print("%s\n", "BAT voltage is too low to boot");
+						early_delay(5000000);
+					}
+				#endif
 			}
 			mxs_5v_boot();
 		}
