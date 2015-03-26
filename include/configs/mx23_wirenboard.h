@@ -11,10 +11,11 @@
 #define CONFIG_MACH_TYPE	4105
 
 /* Wiren Board-specific */
+/* defined in boards.cfg */
 
-#define CONFIG_SPL_MXS_PWR_NOBAT
+/* #define CONFIG_SPL_MXS_PWR_NOBAT */
 /* #define CONFIG_SPL_MXS_PWR_LTC4002 */ /* not for wb 4 */
-#define CONFIG_SPL_MXS_DDR_CL25
+/* #define CONFIG_SPL_MXS_DDR_CL25 */
 /* #define CONFIG_SPL_MXS_DDR_LOWPWR */
 
 
