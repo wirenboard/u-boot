@@ -6,7 +6,7 @@
 #
 
 ifndef	CONFIG_SPL_BUILD
-obj-y	:= mx23_wirenboard4.o
+obj-y	:= mx23_wirenboard.o
 else
 obj-y	:= spl_boot.o
 endif
