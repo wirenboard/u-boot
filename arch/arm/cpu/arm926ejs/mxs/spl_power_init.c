@@ -22,12 +22,6 @@
 				POWER_DCDC4P2_DROPOUT_CTRL_SRC_SEL
 #endif
 
-#define MX23_DEBUG 1
-#define mx23_debug_print(fmt, ...) \
-        do { if (MX23_DEBUG) {printf("%s(): " fmt, __func__, __VA_ARGS__); early_delay(1000); }} while (0)
-
-
-
 /**
  * mxs_power_clock2xtal() - Switch CPU core clock source to 24MHz XTAL
  *
@@ -89,8 +83,6 @@ static void mxs_power_clock2pll(void)
 
 static void mxs_power_set_auto_restart(void)
 {
-	mx23_debug_print("%s\n", "mxs_power_set_auto_restart");
-
 	struct mxs_rtc_regs *rtc_regs =
 		(struct mxs_rtc_regs *)MXS_RTC_BASE;
 
@@ -131,7 +123,6 @@ static void mxs_power_set_auto_restart(void)
  */
 static void mxs_power_set_linreg(void)
 {
-	mx23_debug_print("%s\n", "mxs_power_set_linreg");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -189,7 +180,6 @@ static int mxs_is_batt_ready(void)
  */
 static int mxs_is_batt_good(void)
 {
-	mx23_debug_print("%s\n", "mxs_is_batt_good");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t volt = mxs_get_batt_volt();
@@ -301,7 +291,6 @@ static void mxs_src_power_init(void)
  */
 static void mxs_power_init_4p2_params(void)
 {
-	mx23_debug_print("%s\n", "mxs_power_init_4p2_params");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -333,7 +322,6 @@ static void mxs_power_init_4p2_params(void)
  */
 static void mxs_enable_4p2_dcdc_input(int xfer)
 {
-	mx23_debug_print("%s\n", "mxs_enable_4p2_dcdc_input");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t tmp, vbus_thresh, vbus_5vdetect, pwd_bo;
@@ -438,7 +426,6 @@ static void mxs_enable_4p2_dcdc_input(int xfer)
  */
 static void mxs_power_init_4p2_regulator(void)
 {
-	mx23_debug_print("%s\n", "mxs_power_init_4p2_regulator");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t tmp, tmp2;
@@ -535,7 +522,6 @@ static void mxs_power_init_4p2_regulator(void)
  */
 static void mxs_power_init_dcdc_4p2_source(void)
 {
-	mx23_debug_print("%s\n", "mxs_power_init_dcdc_4p2_source");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -567,11 +553,6 @@ static void mxs_power_init_dcdc_4p2_source(void)
  */
 static void mxs_power_enable_4p2(void)
 {
-	mx23_debug_print("%s\n", "mxs_power_enable_4p2");
-
-
-
-
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t vdddctrl, vddactrl, vddioctrl;
@@ -629,8 +610,6 @@ static void mxs_power_enable_4p2(void)
 
 	mxs_power_init_dcdc_4p2_source();
 
-	int i;
-
 	writel(vdddctrl, &power_regs->hw_power_vdddctrl);
 	early_delay(20);
 
@@ -668,7 +647,6 @@ static void mxs_power_enable_4p2(void)
  */
 static void mxs_boot_valid_5v(void)
 {
-	mx23_debug_print("%s\n", "mxs_boot_valid_5v");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -717,7 +695,6 @@ static void mxs_powerdown(void)
  */
 static void mxs_batt_boot(void)
 {
-	mx23_debug_print("%s\n", "mxs_batt_boot");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -775,7 +752,6 @@ static void mxs_batt_boot(void)
  */
 static void mxs_handle_5v_conflict(void)
 {
-	mx23_debug_print("%s\n", "mxs_handle_5v_conflict");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t tmp;
@@ -828,7 +804,6 @@ static void mxs_handle_5v_conflict(void)
  */
 static void mxs_5v_boot(void)
 {
-	mx23_debug_print("%s\n", "mxs_5v_boot");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -862,7 +837,6 @@ static void mxs_5v_boot(void)
  */
 static void mxs_init_batt_bo(void)
 {
-	mx23_debug_print("%s\n", "mxs_init_batt_bo");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -885,8 +859,6 @@ static void mxs_init_batt_bo(void)
  */
 static void mxs_switch_vddd_to_dcdc_source(void)
 {
-	mx23_debug_print("%s\n", "mxs_switch_vddd_to_dcdc_source");
-
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -915,7 +887,6 @@ static void mxs_switch_vddd_to_dcdc_source(void)
  */
 static void mxs_power_configure_power_source(void)
 {
-	mx23_debug_print("%s\n", "mxs_power_configure_power_source");
 	int batt_ready, batt_good;
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
@@ -930,7 +901,7 @@ static void mxs_power_configure_power_source(void)
 		batt_ready = mxs_is_batt_ready();
 		if (batt_ready) {
 			/* 5V source detected, good battery detected. */
-			mx23_debug_print("%s\n", "/* 5V source detected, good battery detected. */");
+			debug("SPL: 5V source detected, good battery detected\n");
 
 			/* Wiren Board: always use 5V if present */
 			#if defined(CONFIG_SPL_MXS_PWR_NOBAT)
@@ -939,11 +910,11 @@ static void mxs_power_configure_power_source(void)
 				mxs_batt_boot();
 			#endif
 		} else {
-			mx23_debug_print("%s\n", "not batt_ready");
+			debug("SPL: battery is not ready\n");
 			batt_good = mxs_is_batt_good();
 			if (!batt_good) {
 				/* 5V source detected, bad battery detected. */
-				mx23_debug_print("%s\n", "5V source detected, bad battery detected. */");
+				debug("SPL: 5V source detected, bad battery detected\n");
 				writel(LRADC_CONVERSION_AUTOMATIC,
 					&lradc_regs->hw_lradc_conversion_clr);
 				clrbits_le32(&power_regs->hw_power_battmonitor,
@@ -957,7 +928,7 @@ static void mxs_power_configure_power_source(void)
 
 				#if !defined(CONFIG_SPL_MXS_PWR_NOBAT) && defined(CONFIG_SPL_MXS_PWR_LTC4002)
 					while (mxs_get_batt_volt() < 3200) {
-						mx23_debug_print("%s\n", "BAT voltage is too low to boot");
+						debug("SPL: BAT voltage is too low to boot\n");
 						early_delay(5000000);
 					}
 				#endif
@@ -966,7 +937,7 @@ static void mxs_power_configure_power_source(void)
 		}
 	} else {
 		/* 5V not detected, booting from battery. */
-		mx23_debug_print("%s\n", "/* 5V not detected, booting from battery. */");
+		debug("SPL: 5V not detected, booting from battery\n");
 		mxs_batt_boot();
 	}
 
@@ -999,7 +970,6 @@ static void mxs_power_configure_power_source(void)
  */
 static void mxs_enable_output_rail_protection(void)
 {
-	mx23_debug_print("%s\n", "mxs_enable_output_rail_protection");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
@@ -1027,16 +997,18 @@ static void mxs_enable_output_rail_protection(void)
  */
 static int mxs_get_vddio_power_source_off(void)
 {
-	mx23_debug_print("%s\n", "mxs_get_vddio_power_source_off");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t tmp;
+
+	debug("SPL: VDDIO rail power source is ");
 
 	if (readl(&power_regs->hw_power_sts) & POWER_STS_VDD5V_GT_VDDIO) {
 		tmp = readl(&power_regs->hw_power_vddioctrl);
 		if (tmp & POWER_VDDIOCTRL_DISABLE_FET) {
 			if ((tmp & POWER_VDDIOCTRL_LINREG_OFFSET_MASK) ==
 				POWER_VDDIOCTRL_LINREG_OFFSET_0STEPS) {
+				debug("linear regulator\n");
 				return 1;
 			}
 		}
@@ -1045,11 +1017,13 @@ static int mxs_get_vddio_power_source_off(void)
 			POWER_5VCTRL_ENABLE_DCDC)) {
 			if ((tmp & POWER_VDDIOCTRL_LINREG_OFFSET_MASK) ==
 				POWER_VDDIOCTRL_LINREG_OFFSET_0STEPS) {
+				debug("linear regulator\n");
 				return 1;
 			}
 		}
 	}
 
+	debug("DCDC\n");
 	return 0;
 
 }
@@ -1063,15 +1037,16 @@ static int mxs_get_vddio_power_source_off(void)
  */
 static int mxs_get_vddd_power_source_off(void)
 {
-	mx23_debug_print("%s\n", "mxs_get_vddd_power_source_off");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t tmp;
 
+	debug("SPL: VDDD rail power source is ");
 	tmp = readl(&power_regs->hw_power_vdddctrl);
 	if (tmp & POWER_VDDDCTRL_DISABLE_FET) {
 		if ((tmp & POWER_VDDDCTRL_LINREG_OFFSET_MASK) ==
 			POWER_VDDDCTRL_LINREG_OFFSET_0STEPS) {
+			debug("linear regulator\n");
 			return 1;
 		}
 	}
@@ -1079,6 +1054,7 @@ static int mxs_get_vddd_power_source_off(void)
 	if (readl(&power_regs->hw_power_sts) & POWER_STS_VDD5V_GT_VDDIO) {
 		if (!(readl(&power_regs->hw_power_5vctrl) &
 			POWER_5VCTRL_ENABLE_DCDC)) {
+			debug("linear regulator\n");
 			return 1;
 		}
 	}
@@ -1086,10 +1062,12 @@ static int mxs_get_vddd_power_source_off(void)
 	if (!(tmp & POWER_VDDDCTRL_ENABLE_LINREG)) {
 		if ((tmp & POWER_VDDDCTRL_LINREG_OFFSET_MASK) ==
 			POWER_VDDDCTRL_LINREG_OFFSET_1STEPS_BELOW) {
+			debug("linear regulator\n");
 			return 1;
 		}
 	}
 
+	debug("DCDC\n");
 	return 0;
 }
 
@@ -1165,12 +1143,14 @@ static const struct mxs_vddx_cfg mxs_vddmem_cfg = {
 static void mxs_power_set_vddx(const struct mxs_vddx_cfg *cfg,
 				uint32_t new_target, uint32_t new_brownout)
 {
-	mx23_debug_print("%s\n", "mxs_power_set_vddx");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 	uint32_t cur_target, diff, bo_int = 0;
 	uint32_t powered_by_linreg = 0;
 	int adjust_up, tmp;
+
+	debug("SPL: Configure voltage on DCDC to %d mV, brownout at %d mV\n",
+			new_target, new_brownout);
 
 	new_brownout = DIV_ROUND_CLOSEST(new_target - new_brownout,
 					 cfg->step_mV);
@@ -1280,7 +1260,6 @@ static void mxs_ungate_power(void)
  */
 void mxs_power_init(void)
 {
-	mx23_debug_print("%s\n","mxs_power_init");
 	struct mxs_power_regs *power_regs =
 		(struct mxs_power_regs *)MXS_POWER_BASE;
 
