@@ -8,4 +8,8 @@ if MXS
 config SYS_SOC
 	default "mxs"
 
+config MXSIMAGE_WITH_ZIMAGE
+	bool "Inclue zImage into bootstream (u-boot.sb)"
+	default no
+
 endif
