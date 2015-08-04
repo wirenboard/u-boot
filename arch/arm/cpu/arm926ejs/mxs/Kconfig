@@ -1,0 +1,11 @@
+config MXS
+	bool
+	select CPU_ARM926EJS
+	select SUPPORT_SPL
+
+if MXS
+
+config SYS_SOC
+	default "mxs"
+
+endif
