@@ -88,6 +88,9 @@
 #define CONFIG_LOADADDR		0x42000000
 #define CONFIG_SYS_LOAD_ADDR	CONFIG_LOADADDR
 
+#define CONFIG_BOOTCOUNT_LIMIT
+#define CONFIG_BOOTCOUNT_ENV
+
 /* Extra Environment */
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"console=ttyAMA0\0" \
@@ -111,6 +114,18 @@
 	"mmcboot=echo Booting from mmc ...; " \
 		"run mmcargs; " \
 		"bootz ${loadaddr} - ${fdt_addr}\0" \
+	"bootcount=0\0" \
+	"bootlimit=3\0" \
+	"upgrade_available=1\0" \
+	"altbootcmd=if test ${boot_part} -eq 2; then " \
+			"echo Switching to rootfs on partition 3;" \
+			"setenv mmcpart 3;" \
+		"else; " \
+			"echo Switching to rootfs on partition 2;" \
+			"setenv mmcpart 2;" \
+		"fi;" \
+		"setenv bootcount 0;" \
+		"saveenv; boot\0"
 
 #define CONFIG_BOOTCOMMAND \
 	"mmc dev ${mmcdev};" \
