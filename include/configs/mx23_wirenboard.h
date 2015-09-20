@@ -90,86 +90,27 @@
 
 /* Extra Environment */
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	"update_sd_firmware_filename=u-boot.sd\0" \
-	"update_sd_firmware="		/* Update the SD firmware partition */ \
-		"if mmc rescan ; then "	\
-		"if tftp ${update_sd_firmware_filename} ; then " \
-		"setexpr fw_sz ${filesize} / 0x200 ; "	/* SD block size */ \
-		"setexpr fw_sz ${fw_sz} + 1 ; "	\
-		"mmc write ${loadaddr} 0x800 ${fw_sz} ; " \
-		"fi ; "	\
-		"fi\0" \
-	"script=boot.scr\0"	\
-	"uimage=uImage\0" \
 	"console=ttyAMA0\0" \
-	"fdt_file=/boot/dtbs/imx23-olinuxino.dtb\0" \
+	"fdt_file=/boot/dtbs/imx23-wirenboard41.dtb\0" \
 	"fdt_addr=0x41000000\0" \
-	"boot_fdt=try\0" \
-	"ip_dyn=yes\0" \
-	"optargs=\0" \
+	"optargs=ro rootwait fixrtc\0" \
 	"video=\0" \
-	"mmcdev=0\0" \
+	"mmcdev=" __stringify(CONFIG_SYS_MMC_ENV_DEV) "\0" \
 	"mmcpart=2\0" \
-	"mmcroot=/dev/mmcblk0p2 ro\0" \
-	"mmcrootfstype=ext4 rootwait fixrtc\0" \
+	"mmcrootfstype=ext4\0" \
 	"mmcargs=setenv bootargs console=${console},${baudrate} " \
 		"${optargs} " \
-		"root=${mmcroot} " \
+		"root=/dev/mmcblk0p${mmcpart} " \
 		"rootfstype=${mmcrootfstype} " \
 		"video=${video}\0" \
 	"loadbootenv=load mmc ${mmcdev}:${mmcpart} ${loadaddr} /boot/uEnv.txt\0" \
 	"importbootenv=echo Importing environment from mmc (uEnv.txt)...; " \
 		"env import -t ${loadaddr} ${filesize}\0" \
-	"loadbootscript="  \
-		"fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
-	"bootscript=echo Running bootscript from mmc ...; "	\
-		"source\0" \
-	"loaduimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${uimage}\0" \
 	"loadzimage=load mmc ${mmcdev}:${mmcpart} ${loadaddr} /boot/zImage\0" \
 	"loadfdt=load mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
 	"mmcboot=echo Booting from mmc ...; " \
 		"run mmcargs; " \
 		"bootz ${loadaddr} - ${fdt_addr}\0" \
-	"mmcdefault=echo Booting from mmc ...; " \
-		"run mmcargs; " \
-		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
-			"if run loadfdt; then " \
-				"bootm ${loadaddr} - ${fdt_addr}; " \
-			"else " \
-				"if test ${boot_fdt} = try; then " \
-					"bootm; " \
-				"else " \
-					"echo WARN: Cannot load the DT; " \
-				"fi; " \
-			"fi; " \
-		"else " \
-			"bootm; " \
-		"fi;\0" \
-	"netargs=setenv bootargs console=${console},${baudrate} " \
-		"root=/dev/nfs " \
-		"ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
-	"netboot=echo Booting from net ...; " \
-		"usb start; " \
-		"run netargs; "	\
-		"if test ${ip_dyn} = yes; then " \
-			"setenv get_cmd dhcp; " \
-		"else " \
-			"setenv get_cmd tftp; " \
-		"fi; " \
-		"${get_cmd} ${uimage}; " \
-		"if test ${boot_fdt} = yes; then " \
-			"if ${get_cmd} ${fdt_addr} ${fdt_file}; then " \
-				"bootm ${loadaddr} - ${fdt_addr}; " \
-			"else " \
-				"if test ${boot_fdt} = try; then " \
-					"bootm; " \
-				"else " \
-					"echo WARN: Cannot load the DT; " \
-				"fi;" \
-			"fi; " \
-		"else " \
-			"bootm; " \
-		"fi;\0"
 
 #define CONFIG_BOOTCOMMAND \
 	"mmc dev ${mmcdev};" \
