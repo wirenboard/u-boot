@@ -35,8 +35,6 @@ override_dh_auto_build:
 		CROSS_BUILD_TOOLS=1 \
 		V=1 \
 	    tools-only env
-	$(CROSS_COMPILE)strip --remove-section=.comment $(TOOLSDIR)/tools/env/fw_printenv
-	$(CROSS_COMPILE)strip --remove-section=.comment $(TOOLSDIR)/tools/mkimage
 
 override_dh_auto_test:
 	# skip tests.
