@@ -30,7 +30,7 @@ LDFLAGS := $(patsubst -Wl$(comma)%,%,$(LDFLAGS))
 
 override_dh_auto_build: TOOLSDIR := debian/build/tools
 override_dh_auto_build:
-	make O=$(TOOLSDIR) mx23_wirenboard_defconfig
+	make O=$(TOOLSDIR) mx23_wirenboard4_defconfig
 	$(MAKE) O=$(TOOLSDIR) $(DEB_UBOOT_FLAGS) \
 		CROSS_BUILD_TOOLS=1 \
 		V=1 \
