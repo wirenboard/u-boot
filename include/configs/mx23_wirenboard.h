@@ -10,17 +10,6 @@
 #define CONFIG_MX23				/* i.MX23 SoC */
 #define CONFIG_MACH_TYPE	4105
 
-/* Wiren Board-specific */
-/* defined in boards.cfg */
-
-/* #define CONFIG_SPL_MXS_PWR_NOBAT */
-/* #define CONFIG_SPL_MXS_PWR_LTC4002 */ /* not for wb 4 */
-/* #define CONFIG_SPL_MXS_DDR_CL25 */
-/* #define CONFIG_SPL_MXS_DDR_LOWPWR */
-
-
-
-
 /* U-Boot Commands */
 #define CONFIG_SYS_NO_FLASH
 #define CONFIG_DISPLAY_CPUINFO
