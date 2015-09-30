@@ -9,4 +9,33 @@ config SYS_VENDOR
 config SYS_CONFIG_NAME
 	default "mx23_wirenboard"
 
+menu "WirenBoard-specific options"
+
+config SPL_MXS_PWR_NOBAT
+	bool "Device without battery"
+	default y
+
+config SPL_MXS_DDR_LOWPWR
+	bool "DDR low power mode"
+	default n
+	help
+	  Enable this for Alliance memory
+
+choice
+	prompt "DDR CAS latency"
+	default SPL_MXS_DDR_CL25
+
+config SPL_MXS_DDR_CL2
+	bool "2"
+
+config SPL_MXS_DDR_CL25
+	bool "2.5"
+
+config SPL_MXS_DDR_CL3
+	bool "3"
+
+endchoice
+
+endmenu
+
 endif
