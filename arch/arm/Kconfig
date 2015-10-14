@@ -184,6 +184,10 @@ config TARGET_MX23_WIRENBOARD
 	bool "Support mx23_wirenboard"
 	select MXS
 
+config TARGET_MX28_WIRENBOARD
+	bool "Support mx28_wirenboard"
+	select MXS
+
 config TARGET_BG0900
 	bool "Support bg0900"
 	select CPU_ARM926EJS
@@ -941,6 +945,7 @@ source "board/maxbcm/Kconfig"
 source "board/mpl/vcma9/Kconfig"
 source "board/olimex/mx23_olinuxino/Kconfig"
 source "board/contactless/mx23_wirenboard/Kconfig"
+source "board/contactless/mx28_wirenboard/Kconfig"
 source "board/palmld/Kconfig"
 source "board/palmtc/Kconfig"
 source "board/palmtreo680/Kconfig"
