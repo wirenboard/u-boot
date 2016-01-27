@@ -16,18 +16,15 @@
 #define CONFIG_DOS_PARTITION
 
 #define CONFIG_CMD_CACHE
-#define CONFIG_CMD_DHCP
-#define CONFIG_CMD_EXT2
-#define CONFIG_CMD_EXT4
-#define CONFIG_CMD_FS_GENERIC
-#define CONFIG_CMD_FAT
 #define CONFIG_CMD_GPIO
-#define CONFIG_CMD_LED
 #define CONFIG_CMD_MMC
 #define CONFIG_CMD_USB
 #define CONFIG_CMD_FUSE
 
-#define CONFIG_SPL_SERIAL_SUPPORT
+#define CONFIG_CMD_FS_GENERIC
+#define CONFIG_CMD_EXT4
+#define CONFIG_CMD_FAT
+
 /* bootz: zImage/initrd.img support */
 #define CONFIG_CMD_BOOTZ
 #define CONFIG_SUPPORT_RAW_INITRD
@@ -44,12 +41,14 @@
 
 /* Environment is in MMC */
 #if defined(CONFIG_CMD_MMC) && defined(CONFIG_ENV_IS_IN_MMC)
-#define CONFIG_ENV_OFFSET	(256 * 1024)
-#define CONFIG_ENV_SIZE		(16 * 1024)
+#define CONFIG_ENV_OFFSET		(256 * 1024)
+#define CONFIG_ENV_SIZE			(16 * 1024)
 #define CONFIG_SYS_MMC_ENV_DEV	0
 #endif
 
 /* Status LED */
+#define CONFIG_CMD_LED
+
 #define CONFIG_STATUS_LED
 #define CONFIG_GPIO_LED
 #define CONFIG_BOARD_SPECIFIC_LED
@@ -69,6 +68,7 @@
 #ifdef CONFIG_CMD_NET
 #define CONFIG_USB_HOST_ETHER
 #define CONFIG_USB_ETHER_SMSC95XX
+#define CONFIG_CMD_DHCP
 #endif
 
 /* Booting Linux */
