@@ -739,7 +739,9 @@ static void mxs_batt_boot(void)
 		POWER_5VCTRL_CHARGE_4P2_ILIMIT_MASK,
 		0x8 << POWER_5VCTRL_CHARGE_4P2_ILIMIT_OFFSET);
 
-	mxs_power_enable_4p2();
+	#ifndef CONFIG_SPL_MXS_BATT_NO_4P2
+		mxs_power_enable_4p2();
+	#endif
 }
 
 /**
