@@ -16,7 +16,7 @@ config SPL_MXS_PWR_NOBAT
 	bool "Device without battery"
 	default y
 
-config CONFIG_SPL_MXS_BATT_NO_4P2
+config SPL_MXS_BATT_NO_4P2
 	bool "Do not enable 4P2 regulator on battery (BAT) power"
 	default n
 
