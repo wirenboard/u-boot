@@ -9,12 +9,16 @@ config SYS_SOC
 	default "mxs"
 
 config MXSIMAGE_WITH_ZIMAGE
-	bool "Inclue zImage into bootstream (u-boot.sb)"
+	bool "Include zImage into bootstream (u-boot.sb)"
 	default no
 
 config SPL_MXS_PWR_NOBAT
 	bool "Device without battery"
 	default y
+
+config CONFIG_SPL_MXS_BATT_NO_4P2
+	bool "Do not enable 4P2 regulator on battery (BAT) power"
+	default n
 
 config SPL_MXS_DDR_LOWPWR
 	bool "DDR low power mode"
