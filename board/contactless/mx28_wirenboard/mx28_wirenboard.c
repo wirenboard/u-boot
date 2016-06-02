@@ -63,6 +63,10 @@ int board_early_init_f(void)
 	gpio_direction_output(MX28_PAD_SAIF0_SDATA0__GPIO_3_23, 1);
 	gpio_direction_output(MX28_PAD_SAIF1_SDATA0__GPIO_3_26, 1);
 
+#ifdef CONFIG_WATCHDOG_GPIO
+	mxs_iomux_setup_pad(CONFIG_WATCHDOG_GPIO);
+	gpio_direction_output(CONFIG_WATCHDOG_GPIO, 0);
+#endif
 
 	return 0;
 }
@@ -160,4 +164,10 @@ int board_eth_init(bd_t *bis)
 	return ret;
 }
 
+#endif
+
+#ifdef CONFIG_HW_WATCHDOG
+void hw_watchdog_reset(void) {
+	gpio_set_value(CONFIG_WATCHDOG_GPIO, !gpio_get_value(CONFIG_WATCHDOG_GPIO));
+}
 #endif

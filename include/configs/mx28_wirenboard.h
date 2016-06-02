@@ -118,7 +118,12 @@
 #define STATUS_LED_STATE	STATUS_LED_ON
 #define STATUS_LED_PERIOD	(CONFIG_SYS_HZ / 2)
 
+/* GPIO watchdog */
+#define CONFIG_HW_WATCHDOG
 
+#ifdef CONFIG_HW_WATCHDOG
+#define CONFIG_WATCHDOG_GPIO MX28_PAD_SSP1_CMD__GPIO_2_13
+#endif
 
 
 /* Booting Linux */

@@ -116,6 +116,10 @@ static void mxs_spl_console_init(void)
 #endif
 }
 
+#ifdef CONFIG_HW_WATCHDOG
+void hw_watchdog_reset(void) {}
+#endif
+
 void mxs_common_spl_init(const uint32_t arg, const uint32_t *resptr,
 			 const iomux_cfg_t *iomux_setup,
 			 const unsigned int iomux_size)
