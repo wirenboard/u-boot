@@ -43,11 +43,11 @@
 
 /* Environment */
 #define CONFIG_ENV_OVERWRITE
+#define CONFIG_ENV_SIZE			(16 * 1024)
 
 /* Environment is in MMC */
 #if defined(CONFIG_CMD_MMC) && defined(CONFIG_ENV_IS_IN_MMC)
 #define CONFIG_ENV_OFFSET		(256 * 1024)
-#define CONFIG_ENV_SIZE			(16 * 1024)
 #define CONFIG_SYS_MMC_ENV_DEV	0
 #endif
 
@@ -127,8 +127,10 @@
 #define CONFIG_LOADADDR		0x42000000
 #define CONFIG_SYS_LOAD_ADDR	CONFIG_LOADADDR
 
+#ifndef CONFIG_BOOT_USBGADGET
 #define CONFIG_BOOTCOUNT_LIMIT
 #define CONFIG_BOOTCOUNT_ENV
+#endif
 
 /* Extra Environment */
 #define CONFIG_EXTRA_ENV_SETTINGS \
