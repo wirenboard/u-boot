@@ -1,0 +1,12 @@
+if TARGET_MX6UL_WIRENBOARD
+
+config SYS_BOARD
+	default "mx6ul_wirenboard"
+
+config SYS_VENDOR
+	default "contactless"
+
+config SYS_CONFIG_NAME
+	default "mx6ul_wirenboard"
+
+endif
