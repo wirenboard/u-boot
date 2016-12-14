@@ -1,0 +1,20 @@
+Source: u-boot-tools
+Maintainer: Alexey Ignatov <lexszero@gmail.com>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9), pkg-config, libssl-dev
+
+Package: u-boot-tools
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Breaks: uboot-envtools (<< 20081215-3~),
+        uboot-mkimage (<= 0.4build1),
+        u-boot (<< 2010.12-2)
+Replaces: uboot-envtools (<< 20081215-3~),
+          uboot-mkimage (<= 0.4build1),
+          u-boot (<< 2010.12-2)
+Description: companion tools for Das U-Boot bootloader
+ This package includes the mkimage program, which allows generation of U-Boot
+ images in various formats, and the fw_printenv and fw_setenv programs to read
+ and modify U-Boot's environment.

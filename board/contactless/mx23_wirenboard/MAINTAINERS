@@ -1,0 +1,6 @@
+MX23_WIRENBOARD BOARD
+M:	Evgeny Boger <boger@contactless.ru>
+S:	Maintained
+F:	board/contactless/mx23_wirenboard/
+F:	include/configs/mx23_wirenboard.h
+F:	configs/mx23_wirenboard4_defconfig

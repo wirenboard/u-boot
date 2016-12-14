@@ -1,0 +1,14 @@
+#!/bin/sh
+
+builddir=debian/build/tools
+for tool in mkimage dumpimage fit_info env/fw_printenv ; do
+    echo ${builddir}/tools/${tool} /usr/bin/
+done
+
+echo doc/mkimage.1 /usr/share/man/man1/
+
+# manpages
+echo debian/manpages/fw_printenv.8 /usr/share/man/man8/
+echo debian/manpages/fw_setenv.8 /usr/share/man/man8/
+
+echo "debian/fw_env.config /etc/"

@@ -6,9 +6,6 @@ config SYS_BOARD
 config SYS_VENDOR
 	default "denx"
 
-config SYS_SOC
-	default "mxs"
-
 config SYS_CONFIG_NAME
 	default "m28evk"
 

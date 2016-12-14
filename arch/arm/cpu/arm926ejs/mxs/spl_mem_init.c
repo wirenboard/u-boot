@@ -16,6 +16,11 @@
 
 #include "mxs_init.h"
 
+//~ #define CONFIG_SPL_MXS_DDR_96MHZ
+//~ #define CONFIG_SPL_MXS_DDR_LOWPWR
+//~ #define CONFIG_SPL_MXS_DDR_CL25
+
+
 static uint32_t dram_vals[] = {
 /*
  * i.MX28 DDR2 at 200MHz
@@ -74,10 +79,44 @@ static uint32_t dram_vals[] = {
  * i.MX23 DDR at 133MHz
  */
 #elif defined(CONFIG_MX23)
+
+
+#if defined(CONFIG_SPL_MXS_DDR_96MHZ)
+	0x01010001, 0x00010000, 0x01000000, 0x00000001,
+	0x00000101,	0x00000000,	0x00010000,	0x01000001,
+	0x01000000,	0x00000001,	0x07000200,	0x00070202,
+	0x02020000,	0x04040a01,	0x00000201,	0x02040000,
+	0x02000000,	0x25001506,	0x1f1f0000,	0x027f1a1a,
+	0x02051c22,	0x00000007,	0x00080008,	0x00200020,
+	0x00200020,	0x00200020,	0x000002e6,	0x00000000,
+	0x00000000,	0x00000020,	0x00000020,	0x00c80000,
+	0x00081a3b,	0x000000c8,	0x00004b0d,	0x00000000,
+	0x00000101,	0x00040001,	0x00000000,	0x00000000,
+	0x00010000
+#else
 	0x01010001, 0x00010100, 0x01000101, 0x00000001,
-	0x00000101, 0x00000000, 0x00010000, 0x01000001,
-	0x00000000, 0x00000001, 0x07000200, 0x00070202,
-	0x02020000, 0x04040a01, 0x00000201, 0x02040000,
+
+	0x00000101,
+	#if defined(CONFIG_SPL_MXS_DDR_LOWPWR)
+		0x00000001,
+	#else
+		0x00000000,
+	#endif
+	0x00010000, 0x01000001,
+
+	#if defined(CONFIG_SPL_MXS_DDR_CL3)
+		0x00000000, 0x00000001, 0x07000200, 0x00070203, //CL=3
+		0x02020000, 0x06060a01, 0x00000201, 0x02040000, // CL=3
+	#elif defined(CONFIG_SPL_MXS_DDR_CL25)
+		0x00000000, 0x00000001, 0x07000200, 0x00070206, //CL=2.5
+		0x02020000, 0x05050a01, 0x00000201, 0x02040000, // CL=2.5
+	#elif defined(CONFIG_SPL_MXS_DDR_CL20)
+		0x00000000, 0x00000001, 0x07000200, 0x00070202, //CL=2
+		0x02020000, 0x04040a01, 0x00000201, 0x02040000, //CL=2
+	#else
+	#error "CONFIG_SPL_MXS_DDR_CL{2,25,3} must be defined"
+	#endif
+
 	0x02000000, 0x19000f08, 0x0d0d0000, 0x02021313,
 	0x02061521, 0x0000000a, 0x00080008, 0x00200020,
 	0x00200020, 0x00200020, 0x000003f7, 0x00000000,
@@ -85,6 +124,10 @@ static uint32_t dram_vals[] = {
 	0x000a23cd, 0x000000c8, 0x00006665, 0x00000000,
 	0x00000101, 0x00040001, 0x00000000, 0x00000000,
 	0x00010000
+#endif
+
+
+
 #else
 #error Unsupported memory initialization
 #endif
@@ -144,8 +187,12 @@ static void mxs_mem_init_clock(void)
 	struct mxs_clkctrl_regs *clkctrl_regs =
 		(struct mxs_clkctrl_regs *)MXS_CLKCTRL_BASE;
 #if defined(CONFIG_MX23)
-	/* Fractional divider for ref_emi is 33 ; 480 * 18 / 33 = 266MHz */
-	const unsigned char divider = 33;
+	#if defined(CONFIG_SPL_MXS_DDR_96MHZ)
+		const unsigned char divider = 30; //96mhz
+	#else
+		/* Fractional divider for ref_emi is 33 ; 480 * 18 / 33 = 266MHz */
+		const unsigned char divider = 33;
+	#endif
 #elif defined(CONFIG_MX28)
 	/* Fractional divider for ref_emi is 21 ; 480 * 18 / 21 = 411MHz */
 	const unsigned char divider = 21;
@@ -167,10 +214,17 @@ static void mxs_mem_init_clock(void)
 
 	early_delay(11000);
 
-	/* Set EMI clock divider for EMI clock to 411 / 2 = 205MHz */
-	writel((2 << CLKCTRL_EMI_DIV_EMI_OFFSET) |
-		(1 << CLKCTRL_EMI_DIV_XTAL_OFFSET),
-		&clkctrl_regs->hw_clkctrl_emi);
+
+	#if defined(CONFIG_SPL_MXS_DDR_96MHZ)
+		writel((3 << CLKCTRL_EMI_DIV_EMI_OFFSET) |
+			(1 << CLKCTRL_EMI_DIV_XTAL_OFFSET),
+			&clkctrl_regs->hw_clkctrl_emi);
+	#else
+		/* Set EMI clock divider for EMI clock to 411 / 2 = 205MHz */
+		writel((2 << CLKCTRL_EMI_DIV_EMI_OFFSET) |
+			(1 << CLKCTRL_EMI_DIV_XTAL_OFFSET),
+			&clkctrl_regs->hw_clkctrl_emi);
+	#endif
 
 	/* Unbypass EMI */
 	writel(CLKCTRL_CLKSEQ_BYPASS_EMI,
@@ -255,18 +309,37 @@ static void mx23_mem_setup_vddmem(void)
 	debug("SPL: Setting mx23 VDDMEM\n");
 
 	/* We must wait before and after disabling the current limiter! */
-	early_delay(10000);
-
+	early_delay(100000);
 	clrbits_le32(&power_regs->hw_power_vddmemctrl,
 		POWER_VDDMEMCTRL_ENABLE_ILIMIT);
 
-	early_delay(10000);
+	mx23_debug_print("%s\n","VDDM current limit disabled");
 
+	early_delay(100*1000);
 }
 
 static void mx23_mem_init(void)
 {
 	debug("SPL: Initialising mx23 SDRAM Controller\n");
+
+	/* Dump memory settings */
+	#if defined(CONFIG_SPL_MXS_DDR_96MHZ)
+	mx23_debug_print("%s\n", "DDR frequency is 96 MHz");
+	#else
+	mx23_debug_print("%s\n", "DDR frequency is 133 MHz");
+	#endif
+
+	#if defined(CONFIG_SPL_MXS_DDR_LOWPWR)
+	mx23_debug_print("%s\n", "EN_LOWPOWER_MODE is on");
+	#endif
+
+	#if defined(CONFIG_SPL_MXS_DDR_CL3)
+	mx23_debug_print("%s\n", "DDR CAS latency=3.0");
+	#elif defined(CONFIG_SPL_MXS_DDR_CL25)
+	mx23_debug_print("%s\n", "DDR CAS latency=2.5");
+	#else
+	mx23_debug_print("%s\n", "DDR CAS latency=2.0");
+	#endif
 
 	/*
 	 * Reset/ungate the EMI block. This is essential, otherwise the system
@@ -275,7 +348,10 @@ static void mx23_mem_init(void)
 	 */
 	mxs_reset_block((struct mxs_register_32 *)MXS_EMI_BASE);
 
+	mx23_debug_print("%s\n","before vddmem");
+
 	mx23_mem_setup_vddmem();
+	mx23_debug_print("%s\n","after vddmem");
 
 	/*
 	 * Configure the DRAM registers
@@ -344,12 +420,21 @@ void mxs_mem_init(void)
 {
 	early_delay(11000);
 
+
+	mx23_debug_print("%s\n","before_init_clock");
+
 	mxs_mem_init_clock();
+	mx23_debug_print("%s\n","after_init_clock");
 
 	mxs_mem_setup_vdda();
+	mx23_debug_print("%s\n","after_vdda_clock");
+	early_delay(100000);
 
 #if defined(CONFIG_MX23)
 	mx23_mem_init();
+
+	mx23_debug_print("%s\n","after_mem_init");
+
 #elif defined(CONFIG_MX28)
 	mx28_mem_init();
 #endif

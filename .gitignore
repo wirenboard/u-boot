@@ -70,6 +70,14 @@ series
 # cscope files
 cscope.*
 
+# debian files
+debian/files
+debian/*.debhelper
+debian/*.debhelper.log
+debian/build/
+debian/u-boot-tools/
+debian/*.substvars
+
 # tags files
 /tags
 /ctags
