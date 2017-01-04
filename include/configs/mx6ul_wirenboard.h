@@ -49,8 +49,20 @@
 #define CONFIG_SYS_I2C_MXC_I2C1		/* enable I2C bus 1 */
 #define CONFIG_SYS_I2C_MXC_I2C2		/* enable I2C bus 2 */
 #define CONFIG_SYS_I2C_SPEED		100000
-
 #endif
+
+/* Status LED */
+#define CONFIG_CMD_LED
+
+#define CONFIG_STATUS_LED
+#define CONFIG_GPIO_LED
+#define CONFIG_BOARD_SPECIFIC_LED
+#define STATUS_LED_BOOT		1
+#define STATUS_LED_BIT		1
+#define STATUS_LED_STATE	STATUS_LED_ON
+#define STATUS_LED_PERIOD	(CONFIG_SYS_HZ / 2)
+
+
 
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 

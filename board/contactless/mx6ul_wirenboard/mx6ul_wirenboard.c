@@ -196,10 +196,21 @@ static iomux_v3_cfg_t const usdhc2_emmc_pads[] = {
 	MX6_PAD_NAND_ALE__GPIO4_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
+static iomux_v3_cfg_t const wb_pads[] = {
+	MX6_PAD_JTAG_TCK__GPIO1_IO14 | MUX_PAD_CTRL(NO_PAD_CTRL), // LED1
+	MX6_PAD_JTAG_TDI__GPIO1_IO13 | MUX_PAD_CTRL(NO_PAD_CTRL), // LED2
+	MX6_PAD_UART2_RTS_B__GPIO1_IO23 | MUX_PAD_CTRL(NO_PAD_CTRL), // Watchdog
+};
 
 static void setup_iomux_uart(void)
 {
 	imx_iomux_v3_setup_multiple_pads(uart1_pads, ARRAY_SIZE(uart1_pads));
+}
+
+/* Carrier board-specific pads */
+static void setup_iomux_wb(void)
+{
+	imx_iomux_v3_setup_multiple_pads(wb_pads, ARRAY_SIZE(wb_pads));
 }
 
 #ifdef CONFIG_FSL_ESDHC
@@ -441,6 +452,8 @@ int board_init(void)
 #ifdef CONFIG_USB_EHCI_MX6
 	setup_usb();
 #endif
+
+	setup_iomux_wb();
 
 	return 0;
 }
