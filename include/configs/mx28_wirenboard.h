@@ -158,7 +158,7 @@
 	"bootcount=0\0" \
 	"bootlimit=3\0" \
 	"upgrade_available=1\0" \
-	"altbootcmd=if test ${boot_part} -eq 2; then " \
+	"altbootcmd=if test ${mmcpart} -eq 2; then " \
 			"echo Switching to rootfs on partition 3;" \
 			"setenv mmcpart 3;" \
 		"else; " \
