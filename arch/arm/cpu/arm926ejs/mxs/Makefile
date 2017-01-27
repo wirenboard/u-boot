@@ -14,8 +14,13 @@ obj-y	+= spl_boot.o spl_lradc_init.o spl_mem_init.o spl_power_init.o
 endif
 
 # Specify the target for use in elftosb call
+ifdef	CONFIG_MXSIMAGE_WITH_ZIMAGE
+MKIMAGE_TARGET-$(CONFIG_MX23) = mxsimage.zimage.mx23.cfg
+MKIMAGE_TARGET-$(CONFIG_MX28) = mxsimage.zimage.mx28.cfg
+else
 MKIMAGE_TARGET-$(CONFIG_MX23) = mxsimage.mx23.cfg
 MKIMAGE_TARGET-$(CONFIG_MX28) = mxsimage.mx28.cfg
+endif
 
 # Generate HAB-capable IVT
 #

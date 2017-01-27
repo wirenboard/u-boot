@@ -1,0 +1,44 @@
+config MXS
+	bool
+	select CPU_ARM926EJS
+	select SUPPORT_SPL
+
+if MXS
+
+config SYS_SOC
+	default "mxs"
+
+config MXSIMAGE_WITH_ZIMAGE
+	bool "Include zImage into bootstream (u-boot.sb)"
+	default no
+
+config SPL_MXS_PWR_NOBAT
+	bool "Device without battery"
+	default y
+
+config SPL_MXS_BATT_NO_4P2
+	bool "Do not enable 4P2 regulator on battery (BAT) power"
+	default n
+
+config SPL_MXS_DDR_LOWPWR
+	bool "DDR low power mode"
+	default n
+	help
+	  Enable this for Alliance memory
+
+choice
+	prompt "DDR CAS latency"
+	default SPL_MXS_DDR_CL25
+
+config SPL_MXS_DDR_CL2
+	bool "2"
+
+config SPL_MXS_DDR_CL25
+	bool "2.5"
+
+config SPL_MXS_DDR_CL3
+	bool "3"
+
+endchoice
+
+endif

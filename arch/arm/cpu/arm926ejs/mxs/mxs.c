@@ -17,7 +17,7 @@
 #include <asm/imx-common/dma.h>
 #include <asm/arch/gpio.h>
 #include <asm/arch/iomux.h>
-#include <asm/arch/imx-regs.h>
+#include <asm/arch	/imx-regs.h>
 #include <asm/arch/sys_proto.h>
 #include <linux/compiler.h>
 

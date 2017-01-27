@@ -1,0 +1,12 @@
+u-boot-tools (2015.07+wb-3) stable; urgency=medium
+
+  * add dumpimage
+  * add fit_info
+
+ -- Alexey Ignatov <lexszero@gmail.com>  Wed, 23 Sep 2015 16:25:27 +0000
+
+u-boot-tools (2015.07+wb-1) stable; urgency=medium
+
+  * u-boot-tools
+
+ -- alexey ignatov <lexszero@gmail.com>  wed, 23 sep 2015 14:05:41 +0000

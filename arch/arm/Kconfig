@@ -14,39 +14,39 @@ config DMA_ADDR_T_64BIT
 	default y if ARM64
 
 config HAS_VBAR
-	bool
+        bool
 
 config HAS_THUMB2
 	bool
 
 config CPU_ARM720T
-	bool
+        bool
 	select SYS_CACHE_SHIFT_5
 
 config CPU_ARM920T
-	bool
+        bool
 	select SYS_CACHE_SHIFT_5
 
 config CPU_ARM926EJS
-	bool
+        bool
 	select SYS_CACHE_SHIFT_5
 
 config CPU_ARM946ES
-	bool
+        bool
 	select SYS_CACHE_SHIFT_5
 
 config CPU_ARM1136
-	bool
+        bool
 	select SYS_CACHE_SHIFT_5
 
 config CPU_ARM1176
-	bool
-	select HAS_VBAR
+        bool
+        select HAS_VBAR
 	select SYS_CACHE_SHIFT_5
 
 config CPU_V7
-	bool
-	select HAS_VBAR
+        bool
+        select HAS_VBAR
 	select HAS_THUMB2
 	select SYS_CACHE_SHIFT_6
 
@@ -56,24 +56,24 @@ config CPU_V7M
 	select SYS_CACHE_SHIFT_5
 
 config CPU_PXA
-	bool
+        bool
 	select SYS_CACHE_SHIFT_5
 
 config CPU_SA1100
-	bool
+        bool
 	select SYS_CACHE_SHIFT_5
 
 config SYS_CPU
-	default "arm720t" if CPU_ARM720T
-	default "arm920t" if CPU_ARM920T
-	default "arm926ejs" if CPU_ARM926EJS
-	default "arm946es" if CPU_ARM946ES
-	default "arm1136" if CPU_ARM1136
-	default "arm1176" if CPU_ARM1176
-	default "armv7" if CPU_V7
-	default "armv7m" if CPU_V7M
-	default "pxa" if CPU_PXA
-	default "sa1100" if CPU_SA1100
+        default "arm720t" if CPU_ARM720T
+        default "arm920t" if CPU_ARM920T
+        default "arm926ejs" if CPU_ARM926EJS
+        default "arm946es" if CPU_ARM946ES
+        default "arm1136" if CPU_ARM1136
+        default "arm1176" if CPU_ARM1176
+        default "armv7" if CPU_V7
+        default "armv7m" if CPU_V7M
+        default "pxa" if CPU_PXA
+        default "sa1100" if CPU_SA1100
 	default "armv8" if ARM64
 
 config SYS_ARM_ARCH
@@ -246,6 +246,14 @@ config TARGET_MX23_OLINUXINO
 	bool "Support mx23_olinuxino"
 	select CPU_ARM926EJS
 	select SUPPORT_SPL
+
+config TARGET_MX23_WIRENBOARD
+	bool "Support mx23_wirenboard"
+	select MXS
+
+config TARGET_MX28_WIRENBOARD
+	bool "Support mx28_wirenboard"
+	select MXS
 
 config TARGET_BG0900
 	bool "Support bg0900"
@@ -981,6 +989,8 @@ source "arch/arm/cpu/armv8/Kconfig"
 
 source "arch/arm/imx-common/Kconfig"
 
+source "arch/arm/cpu/arm926ejs/mxs/Kconfig"
+
 source "board/bosch/shc/Kconfig"
 source "board/BuR/brxre1/Kconfig"
 source "board/BuR/brppt1/Kconfig"
@@ -1034,6 +1044,8 @@ source "board/hisilicon/hikey/Kconfig"
 source "board/imx31_phycore/Kconfig"
 source "board/isee/igep0033/Kconfig"
 source "board/olimex/mx23_olinuxino/Kconfig"
+source "board/contactless/mx23_wirenboard/Kconfig"
+source "board/contactless/mx28_wirenboard/Kconfig"
 source "board/phytec/pcm051/Kconfig"
 source "board/phytec/pcm052/Kconfig"
 source "board/ppcag/bg0900/Kconfig"

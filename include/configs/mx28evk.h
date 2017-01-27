@@ -285,6 +285,17 @@
 			"bootz; " \
 		"fi;\0"
 
+#ifdef CONFIG_BOOT_USBGADGET
+#define CONFIG_BOOTCOMMAND \
+	"setenv bootargs \"console=ttyAMA0,115200\";" \
+		"bootz"
+	/*"setenv ipaddr 192.168.0.34; " \
+	"setenv serverip 192.168.0.1; " \
+	"setenv bootargs \"console=ttyAMA0,115200 video= g_mass_storage.file=/dev/mmcblk0 " \
+		"root=/dev/nfs nfsroot=${serverip}:/var/nfs/wb_debian,vers=3 rw " \
+		"ip=${ipaddr}:${serverip}:${serverip}:255.255.255.0:ev_imx287:eth0:off\"; " \
+		"bootz"*/
+#else
 #define CONFIG_BOOTCOMMAND \
 	"mmc dev ${mmcdev}; if mmc rescan; then " \
 		"if run loadbootscript; then " \
@@ -296,6 +307,8 @@
 			"fi; " \
 		"fi; " \
 	"else run netboot; fi"
+#endif
+
 
 /* The rest of the configuration is shared */
 #include <configs/mxs.h>

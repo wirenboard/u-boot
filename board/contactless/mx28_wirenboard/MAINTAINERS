@@ -1,0 +1,7 @@
+MX28_WIRENBOARD BOARD
+M:	Evgeny Boger <boger@contactless.ru>
+S:	Maintained
+F:	board/contactless/mx28_wirenboard/
+F:	include/configs/mx28_wirenboard5.h
+F:	configs/mx28_wirenboard5_defconfig
+F:	configs/mx28_wirenboard5_usbgadget_defconfig
