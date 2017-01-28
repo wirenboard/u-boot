@@ -63,12 +63,11 @@
 #define STATUS_LED_PERIOD	(CONFIG_SYS_HZ / 2)
 
 
-
-#define CONFIG_SYS_MMC_IMG_LOAD_PART	1
+#define CONFIG_SYS_MMC_IMG_LOAD_PART	2
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"console=ttymxc0\0" \
-	"fdt_file=undefined\0" \
+	"fdt_file=/boot/dtbs/imx6ul-wirenboard-evk.dtb\0" \
 	"fdt_addr=0x83000000\0" \
 	"ip_dyn=yes\0" \
 	"videomode=video=ctfb:x:480,y:272,depth:24,pclk:108695,le:8,ri:4,up:2,lo:4,hs:41,vs:10,sync:0,vmode:0\0" \
