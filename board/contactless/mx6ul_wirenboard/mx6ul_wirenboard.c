@@ -214,85 +214,25 @@ static void setup_iomux_wb(void)
 }
 
 #ifdef CONFIG_FSL_ESDHC
-static struct fsl_esdhc_cfg usdhc_cfg[2] = {
-	{USDHC1_BASE_ADDR, 0, 4},
-	{USDHC2_BASE_ADDR, 0, 8},
-};
+static struct fsl_esdhc_cfg usdhc_cfg_emmc = {USDHC2_BASE_ADDR, 0, 8};
 
-#define USDHC1_CD_GPIO	IMX_GPIO_NR(1, 19)
-#define USDHC1_PWR_GPIO	IMX_GPIO_NR(1, 9)
 #define USDHC2_CD_GPIO	IMX_GPIO_NR(4, 5)
 #define USDHC2_PWR_GPIO	IMX_GPIO_NR(4, 10)
 
 int board_mmc_getcd(struct mmc *mmc)
 {
-	struct fsl_esdhc_cfg *cfg = (struct fsl_esdhc_cfg *)mmc->priv;
-	int ret = 0;
-
-	switch (cfg->esdhc_base) {
-	case USDHC1_BASE_ADDR:
-		ret = !gpio_get_value(USDHC1_CD_GPIO);
-		break;
-	case USDHC2_BASE_ADDR:
-		ret = 1;
-		break;
-	}
-
-	return ret;
+	return 1;
 }
 
 int board_mmc_init(bd_t *bis)
 {
-#ifdef CONFIG_SPL_BUILD
 	imx_iomux_v3_setup_multiple_pads(usdhc2_emmc_pads,
 					 ARRAY_SIZE(usdhc2_emmc_pads));
 	gpio_direction_output(USDHC2_PWR_GPIO, 0);
 	udelay(500);
 	gpio_direction_output(USDHC2_PWR_GPIO, 1);
-	usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
-	return fsl_esdhc_initialize(bis, &usdhc_cfg[1]);
-#else
-	int i, ret;
-
-	/*
-	 * According to the board_mmc_init() the following map is done:
-	 * (U-Boot device node)    (Physical Port)
-	 * mmc0                    USDHC1
-	 * mmc1                    USDHC2
-	 */
-	for (i = 0; i < CONFIG_SYS_FSL_USDHC_NUM; i++) {
-		switch (i) {
-		case 0:
-			imx_iomux_v3_setup_multiple_pads(
-				usdhc1_pads, ARRAY_SIZE(usdhc1_pads));
-			gpio_direction_input(USDHC1_CD_GPIO);
-			usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC_CLK);
-
-			gpio_direction_output(USDHC1_PWR_GPIO, 0);
-			udelay(500);
-			gpio_direction_output(USDHC1_PWR_GPIO, 1);
-			break;
-		case 1:
-			imx_iomux_v3_setup_multiple_pads(
-				usdhc2_emmc_pads, ARRAY_SIZE(usdhc2_emmc_pads));
-			gpio_direction_output(USDHC2_PWR_GPIO, 0);
-			udelay(500);
-			gpio_direction_output(USDHC2_PWR_GPIO, 1);
-			usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
-			break;
-		default:
-			printf("Warning: you configured more USDHC controllers (%d) than supported by the board\n", i + 1);
-			return -EINVAL;
-			}
-
-			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
-			if (ret) {
-				printf("Warning: failed to initialize mmc dev %d\n", i);
-				return ret;
-			}
-	}
-#endif
-	return 0;
+	usdhc_cfg_emmc.sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
+	return fsl_esdhc_initialize(bis, &usdhc_cfg_emmc);
 }
 #endif
 
