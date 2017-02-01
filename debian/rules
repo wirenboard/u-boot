@@ -16,6 +16,13 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
   DEB_UBOOT_FLAGS += -j$(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 endif
 
+ifeq ($(DEB_HOST_ARCH),armel)
+  UBOOT_CONFIG := mx23_wirenboard4
+endif
+ifeq ($(DEB_HOST_ARCH),armhf)
+  UBOOT_CONFIG := mx6ul_wirenboard6
+endif
+
 # the upstream build passes LDFLAGS directly to ld instead of calling gcc for
 # linking; so instead of passing -Wl,foo in LDFLAGS as in automake builds, one
 # should set LDFLAGS to foo directly
@@ -30,7 +37,7 @@ LDFLAGS := $(patsubst -Wl$(comma)%,%,$(LDFLAGS))
 
 override_dh_auto_build: TOOLSDIR := debian/build/tools
 override_dh_auto_build:
-	make O=$(TOOLSDIR) mx23_wirenboard4_defconfig
+	make O=$(TOOLSDIR) $(UBOOT_CONFIG)_defconfig
 	$(MAKE) O=$(TOOLSDIR) $(DEB_UBOOT_FLAGS) \
 		CROSS_BUILD_TOOLS=1 \
 		V=1 \
