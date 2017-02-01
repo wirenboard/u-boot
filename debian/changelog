@@ -1,3 +1,9 @@
+u-boot-tools (2017.01+wb-1) stable; urgency=medium
+
+  * generate correct fw_env.config in postinst
+
+ -- Alexey Ignatov <lexszero@gmail.com>  Wed, 01 Feb 2017 08:28:49 +0000
+
 u-boot-tools (2015.07+wb-3) stable; urgency=medium
 
   * add dumpimage

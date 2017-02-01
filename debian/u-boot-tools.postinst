@@ -1,0 +1,47 @@
+#!/bin/bash
+FWENV="/etc/fw_env.config"
+
+[[ -e /etc/wb_env.sh ]] && {
+	. /etc/wb_env.sh
+	case "$WB_VERSION" in
+		"60" )
+			SOC=imx6ul
+		;;
+		* )
+			SOC=imx28	# imx23/28 uses the same layout, so doesnt' really matter
+		;;
+	esac
+}
+
+[[ -z "$SOC" ]] && {
+	echo "Unknown \$SOC (no wb_env and env var is unset)"
+	exit -1
+}
+
+cat > "$FWENV" <<EOF
+# Configuration file for fw_(printenv/saveenv) utility.
+# Up to two entries are valid, in this case the redundant
+# environment sector is assumed present.
+#
+# XXX this configuration might miss a fifth parameter for the "Number of
+# sectors"
+
+# MTD device name   Device offset   Env. size   Flash sector size
+EOF
+
+case "$SOC" in
+	imx23 | imx28 | mxs)
+		echo "/dev/mmcblk0        0x40000         0x4000" >> "$FWENV"
+	;;
+
+	imx6ul)
+		echo "/dev/mmcblk0        0x80000         0x2000" >> "$FWENV"
+	;;
+
+	*)
+		echo "Unsupported \$SOC $SOC"
+		exit 1
+	;;
+esac
+
+#DEBHELPER#
