@@ -62,6 +62,10 @@
 #define STATUS_LED_STATE	STATUS_LED_ON
 #define STATUS_LED_PERIOD	(CONFIG_SYS_HZ / 2)
 
+#ifndef CONFIG_BOOT_USBGADGET
+#define CONFIG_BOOTCOUNT_LIMIT
+#define CONFIG_BOOTCOUNT_ENV
+#endif
 
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	2
 
@@ -109,6 +113,10 @@
 		"setenv bootcount 0;" \
 		"saveenv; boot\0"
 
+#ifdef CONFIG_BOOT_USBGADGET
+#define CONFIG_BOOTCOMMAND \
+	"ums 0 mmc 0"
+#else
 #define CONFIG_BOOTCOMMAND \
 	"mmc dev ${mmcdev};" \
 	"if mmc rescan; then " \
@@ -127,6 +135,7 @@
 			"run mmcboot;" \
 		"fi;" \
 	"fi;"
+#endif
 
 /* Miscellaneous configurable options */
 #define CONFIG_SYS_MEMTEST_START	0x80000000
@@ -161,9 +170,6 @@
 #define CONFIG_SYS_MMC_ENV_PART		0	/* user area */
 
 #define CONFIG_CMD_BMODE
-
-#ifndef CONFIG_SYS_DCACHE_OFF
-#endif
 
 #ifdef CONFIG_FSL_QSPI
 #define CONFIG_SF_DEFAULT_BUS		0
