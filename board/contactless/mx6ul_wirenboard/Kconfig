@@ -9,4 +9,8 @@ config SYS_VENDOR
 config SYS_CONFIG_NAME
 	default "mx6ul_wirenboard"
 
+config BOOT_USBGADGET
+	bool "Boot as USB Mass Storage Gadget"
+	default no
+
 endif
