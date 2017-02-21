@@ -115,7 +115,7 @@
 
 #ifdef CONFIG_BOOT_USBGADGET
 #define CONFIG_BOOTCOMMAND \
-	"ums 0 mmc 0"
+	"fuse prog -y 0 5 0x4860; fuse prog -y 0 6 0x10; ums 0 mmc 0"
 #else
 #define CONFIG_BOOTCOMMAND \
 	"mmc dev ${mmcdev};" \
