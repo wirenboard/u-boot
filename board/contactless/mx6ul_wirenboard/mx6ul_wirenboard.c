@@ -323,6 +323,10 @@ int board_eth_init(bd_t *bis)
 {
 	setup_iomux_fec(CONFIG_FEC_ENET_DEV);
 
+	/* Apparently, it takes some time for the PHY (LAN8720A)
+	to become fully operational. */
+	udelay(50000);
+
 	return fecmxc_initialize_multi(bis, CONFIG_FEC_ENET_DEV,
 				       CONFIG_FEC_MXC_PHYADDR, IMX_FEC_BASE);
 }
