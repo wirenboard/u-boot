@@ -405,6 +405,7 @@ int board_init(void)
 #ifdef CONFIG_CMD_BMODE
 static const struct boot_mode board_boot_modes[] = {
 	{"emmc", MAKE_CFGVAL(0x60, 0x48, 0x00, 0x00)},
+	{"emmc_rst", MAKE_CFGVAL(0x62, 0x48, 0x00, 0x00)},
 	{NULL,	 0},
 };
 #endif
