@@ -23,6 +23,10 @@
 #include <netdev.h>
 #include <usb.h>
 #include <usb/ehci-ci.h>
+#include <malloc.h>
+#ifdef CONFIG_USE_FDT
+  #include <fdt_support.h>
+#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -550,3 +554,60 @@ void board_init_f(ulong dummy)
 	board_init_r(NULL, 0);
 }
 #endif
+
+#ifdef CONFIG_OF_BOARD_SETUP
+int ft_board_setup(void *blob, bd_t *bd)
+{
+	const char *nodep = 0;
+	int lenp;
+	const char imx6ul_compat_str[] = "fsl,imx6ul";
+	const char imx6ull_compat_str[] = "fsl,imx6ull";
+
+	nodep = fdt_getprop(blob, 0, "compatible", &lenp);
+	if (!nodep) return -1;
+
+	/* allocate a memory buffer for new compatible property */
+	char * buffer = (char *) malloc(sizeof(char) * (lenp + strlen(imx6ull_compat_str) + 1));
+	char * new_compat_end = buffer;
+	size_t new_compat_len = 0;
+
+	for (size_t i=0; ; i++ ) {
+		nodep = fdt_stringlist_get(blob, 0, "compatible", i, &lenp);
+		if (nodep) {
+			if ((strcmp(nodep, imx6ul_compat_str) != 0) && \
+				(strcmp(nodep, imx6ull_compat_str) != 0))
+			{
+			/* Copy the compatible subsstring into the data area
+			     (including the terminating '\0's).
+			*/
+				size_t length = strlen(nodep) + 1;
+				strcpy(new_compat_end, nodep);
+				new_compat_end += length;
+				new_compat_len += length;
+			}
+		} else {
+			break;
+		}
+	}
+
+	u32 cpurev = get_cpu_rev();
+
+	switch ((cpurev & 0xFF000) >> 12) {
+		case MXC_CPU_MX6ULL:
+			strcpy(new_compat_end, imx6ull_compat_str);
+			new_compat_len += strlen(imx6ull_compat_str) + 1;
+			break;
+		case MXC_CPU_MX6UL:
+			strcpy(new_compat_end, imx6ul_compat_str);
+			new_compat_len += strlen(imx6ul_compat_str) + 1;
+			break;
+		default:
+			printf("unknown CPU: %s\n", get_imx_type((cpurev & 0xFF000) >> 12));
+	};
+
+	fdt_setprop(blob, 0, "compatible", buffer, new_compat_len);
+
+	free(buffer);
+	return 0;
+}
+#endif /* CONFIG_OF_BOARD_SETUP */

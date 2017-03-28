@@ -62,6 +62,10 @@
 #define STATUS_LED_STATE	STATUS_LED_ON
 #define STATUS_LED_PERIOD	(CONFIG_SYS_HZ / 2)
 
+/* Additional DTS setup is needed to set "compatible"
+ * property according to CPU type (6UL/6ULL) */
+#define CONFIG_OF_BOARD_SETUP
+
 #ifndef CONFIG_BOOT_USBGADGET
 #define CONFIG_BOOTCOUNT_LIMIT
 #define CONFIG_BOOTCOUNT_ENV
