@@ -571,7 +571,8 @@ int ft_board_setup(void *blob, bd_t *bd)
 	char * new_compat_end = buffer;
 	size_t new_compat_len = 0;
 
-	for (size_t i=0; ; i++ ) {
+	size_t i;
+	for (i=0; ; i++ ) {
 		nodep = fdt_stringlist_get(blob, 0, "compatible", i, &lenp);
 		if (nodep) {
 			if ((strcmp(nodep, imx6ul_compat_str) != 0) && \
