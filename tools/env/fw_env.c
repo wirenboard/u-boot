@@ -23,8 +23,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#ifdef MTD_OLD
 # include <stdint.h>
+#ifdef MTD_OLD
 # include <linux/mtd/mtd.h>
 #else
 # define  __user	/* nothing */
