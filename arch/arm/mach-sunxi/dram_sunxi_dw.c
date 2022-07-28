@@ -417,7 +417,36 @@ static void mctl_set_cr(uint16_t socid, struct dram_para *para)
 		/* Mux pin to A15 address line for single rank memory. */
 		if (!para->dual_rank)
 			setbits_le32(&mctl_com->cr_r1, MCTL_CR_R1_MUX_A15);
+		else
+			clrbits_le32(&mctl_com->cr_r1, MCTL_CR_R1_MUX_A15);
 	}
+}
+
+static void mctl_set_bus_width(struct dram_para *para)
+{
+	struct sunxi_mctl_ctl_reg * const mctl_ctl =
+			(struct sunxi_mctl_ctl_reg *)SUNXI_DRAM_CTL0_BASE;
+
+	/* set half DQ */
+	if (!para->bus_full_width) {
+#if defined CONFIG_SUNXI_DRAM_DW_32BIT
+		writel(0x0, &mctl_ctl->dx[2].gcr);
+		writel(0x0, &mctl_ctl->dx[3].gcr);
+#elif defined CONFIG_SUNXI_DRAM_DW_16BIT
+		writel(0x0, &mctl_ctl->dx[1].gcr);
+#else
+#error Unsupported DRAM bus width!
+#endif
+	}
+}
+
+static void mctl_set_training_cfg(struct dram_para *para)
+{
+	struct sunxi_mctl_ctl_reg * const mctl_ctl =
+			(struct sunxi_mctl_ctl_reg *)SUNXI_DRAM_CTL0_BASE;
+
+	clrsetbits_le32(&mctl_ctl->dtcr, 0xf << 28,
+			para->dual_rank ? 0x03003087 : 0x01003087);
 }
 
 static void mctl_sys_init(uint16_t socid, struct dram_para *para)
@@ -550,22 +579,8 @@ static int mctl_channel_init(uint16_t socid, struct dram_para *para)
 				(0x0 << 10) | (0x3 << 8));
 	}
 
-	/* set half DQ */
-	if (!para->bus_full_width) {
-#if defined CONFIG_SUNXI_DRAM_DW_32BIT
-		writel(0x0, &mctl_ctl->dx[2].gcr);
-		writel(0x0, &mctl_ctl->dx[3].gcr);
-#elif defined CONFIG_SUNXI_DRAM_DW_16BIT
-		writel(0x0, &mctl_ctl->dx[1].gcr);
-#else
-#error Unsupported DRAM bus width!
-#endif
-	}
-
-	/* data training configuration */
-	clrsetbits_le32(&mctl_ctl->dtcr, 0xf << 24,
-			(para->dual_rank ? 0x3 : 0x1) << 24);
-
+	mctl_set_bus_width(para);
+	mctl_set_training_cfg(para);
 	mctl_set_bit_delays(para);
 	udelay(50);
 
@@ -600,25 +615,23 @@ static int mctl_channel_init(uint16_t socid, struct dram_para *para)
 		    || ((readl(&mctl_ctl->dx[1].gsr[0]) >> 24) & 0x2)
 #endif
 		    ) {
-			clrsetbits_le32(&mctl_ctl->dtcr, 0xf << 24, 0x1 << 24);
 			para->dual_rank = 0;
+			mctl_set_training_cfg(para);
 		}
 
 		/* only half DQ width */
 #if defined CONFIG_SUNXI_DRAM_DW_32BIT
 		if (((readl(&mctl_ctl->dx[2].gsr[0]) >> 24) & 0x1) ||
 		    ((readl(&mctl_ctl->dx[3].gsr[0]) >> 24) & 0x1)) {
-			writel(0x0, &mctl_ctl->dx[2].gcr);
-			writel(0x0, &mctl_ctl->dx[3].gcr);
 			para->bus_full_width = 0;
 		}
 #elif defined CONFIG_SUNXI_DRAM_DW_16BIT
 		if ((readl(&mctl_ctl->dx[1].gsr[0]) >> 24) & 0x1) {
-			writel(0x0, &mctl_ctl->dx[1].gcr);
 			para->bus_full_width = 0;
 		}
 #endif
 
+		mctl_set_bus_width(para);
 		mctl_set_cr(socid, para);
 		udelay(20);
 
@@ -693,6 +706,8 @@ static void mctl_auto_detect_dram_size_rank(uint16_t socid, struct dram_para *pa
 	for (rank->page_size = 512; rank->page_size < 8192; rank->page_size *= 2)
 		if (mctl_mem_matches_base(rank->page_size, base))
 			break;
+
+	debug("detected row_bits=%d, bank_bits=%d, page_size=%d\n", rank->row_bits, rank->bank_bits, rank->page_size);
 }
 
 static unsigned long mctl_calc_rank_size(struct rank_para *rank)
@@ -701,30 +716,24 @@ static unsigned long mctl_calc_rank_size(struct rank_para *rank)
 }
 
 /*
- * Because we cannot do mctl_phy_init(PIR_QSGATE) on R40 now (which leads
- * to failure), it's needed to detect the rank count of R40 in another way.
- *
- * The code here is modelled after time_out_detect() in BSP, which tries to
- * access the memory and check for error code.
- *
- * TODO: auto detect half DQ width here
+ * Enable timeout detection and try to access memory address to see if it's here.
+ * return true if success
  */
-static void mctl_r40_detect_rank_count(struct dram_para *para)
+static bool mctl_try_read_with_timeout(ulong address)
 {
-	ulong rank1_base = (ulong) CONFIG_SYS_SDRAM_BASE +
-			   mctl_calc_rank_size(&para->ranks[0]);
 	struct sunxi_mctl_ctl_reg * const mctl_ctl =
 			(struct sunxi_mctl_ctl_reg *)SUNXI_DRAM_CTL0_BASE;
+	bool ret = true;
 
 	/* Enable read time out */
 	setbits_le32(&mctl_ctl->pgcr[0], 0x1 << 25);
 
-	(void) readl((void *) rank1_base);
+	(void) readl((void *) address);
+
 	udelay(10);
 
-	if (readl(&mctl_ctl->pgsr[0]) & (0x1 << 13)) {
-		clrsetbits_le32(&mctl_ctl->dtcr, 0xf << 24, 0x1 << 24);
-		para->dual_rank = 0;
+	if (readl(&mctl_ctl->pgsr[0]) & PGSR_TIMEOUT) {
+		ret = false;
 	}
 
 	/* Reset PHY FIFO to clear it */
@@ -736,10 +745,40 @@ static void mctl_r40_detect_rank_count(struct dram_para *para)
 	setbits_le32(&mctl_ctl->pgcr[0], 0x1 << 24);
 
 	/* Clear time out flag */
-	clrbits_le32(&mctl_ctl->pgsr[0], 0x1 << 13);
+	clrbits_le32(&mctl_ctl->pgsr[0], PGSR_TIMEOUT);
 
+	udelay(10);
 	/* Disable read time out */
 	clrbits_le32(&mctl_ctl->pgcr[0], 0x1 << 25);
+
+	return ret;
+}
+
+/*
+ * Because we cannot do mctl_phy_init(PIR_QSGATE) on R40 now (which leads
+ * to failure), it's needed to detect the rank count and bus width of R40
+ * in another way.
+ *
+ * The code here is modelled after time_out_detect() in BSP, which tries to
+ * access the memory and check for error code.
+ */
+static void mctl_r40_detect_rank_and_width(struct dram_para *para)
+{
+	ulong rank0_base = (ulong) CONFIG_SYS_SDRAM_BASE;
+	ulong rank1_base = (ulong) CONFIG_SYS_SDRAM_BASE + mctl_calc_rank_size(&para->ranks[0]);
+
+	if (!mctl_try_read_with_timeout(rank0_base)) {
+		/* error reading from rank0, probably just half a bus width is used */
+		para->bus_full_width = 0;
+		debug("DQ is half-width\n");
+		/* Do NOT update DRAM controller settings here since it will freeze after trying to access rank1 */
+	}
+
+	if (!mctl_try_read_with_timeout(rank1_base)) {
+		para->dual_rank = 0;
+
+		debug("rank 1 is not present\n");
+	}
 }
 
 static void mctl_auto_detect_dram_size(uint16_t socid, struct dram_para *para)
@@ -929,8 +968,10 @@ unsigned long sunxi_dram_init(void)
 	udelay(10);
 
 	if (socid == SOCID_R40) {
-		mctl_r40_detect_rank_count(&para);
-		mctl_set_cr(SOCID_R40, &para);
+		mctl_r40_detect_rank_and_width(&para);
+		mctl_set_bus_width(&para);
+		mctl_set_training_cfg(&para);
+		mctl_set_cr(socid, &para);
 	}
 
 	mctl_auto_detect_dram_size(socid, &para);

@@ -193,6 +193,7 @@ struct sunxi_mctl_ctl_reg {
 #define PIR_INIT	(0x1 << 0)	/* PHY initialization trigger */
 
 #define PGSR_INIT_DONE	(0x1 << 0)	/* PHY init done */
+#define PGSR_TIMEOUT	(0x1 << 13)	/* Timeout error status */
 
 #define ZQCR_PWRDOWN	(1U << 31)	/* ZQ power down */
 
