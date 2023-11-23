@@ -64,7 +64,7 @@
 	status = "okay";
 
 	pmu0: pmu@36{
-		compatible = "x-powers,axp858";
+		compatible = "x-powers,axp15060";
 		reg = <0x36>;
 		interrupt-parent = <&nmi_intc>;
 		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
