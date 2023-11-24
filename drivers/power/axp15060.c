@@ -128,7 +128,7 @@ int axp_set_aldo(int aldo_num, unsigned int mvolt)
 	int ret;
 	u8 cfg;
 
-	if (aldo_num < 1 || aldo_num > 3)
+	if (aldo_num < 1 || aldo_num > 4)
 		return -EINVAL;
 
 	if (mvolt == 0)
@@ -163,6 +163,11 @@ int axp_set_aldo2(unsigned int mvolt)
 int axp_set_aldo3(unsigned int mvolt)
 {
 	return axp_set_aldo(3, mvolt);
+}
+
+int axp_set_aldo4(unsigned int mvolt)
+{
+	return axp_set_aldo(4, mvolt);
 }
 
 int axp_set_dldo(int dldo_num, unsigned int mvolt)
