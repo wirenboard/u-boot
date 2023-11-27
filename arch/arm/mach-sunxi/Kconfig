@@ -108,6 +108,42 @@ config DRAM_SUN50I_H616_TPR12
 	default 0x0
 	help
 	  TPR12 value from vendor DRAM settings.
+
+config DRAM_SUN50I_H616_TPR13
+	hex "H616 DRAM TPR13 parameter"
+	default 0x0
+	help
+	  TPR13 value from vendor DRAM settings.
+
+config DRAM_SUN50I_H616_MR3
+	hex "H616 DRAM MR3 parameter"
+	default 0x0
+	help
+	  MR3 value from vendor DRAM settings.
+
+config DRAM_SUN50I_H616_MR11
+	hex "H616 DRAM MR11 parameter"
+	default 0x0
+	help
+	  MR11 value from vendor DRAM settings.
+
+config DRAM_SUN50I_H616_MR12
+	hex "H616 DRAM MR12 parameter"
+	default 0x0
+	help
+	  MR12 value from vendor DRAM settings.
+
+config DRAM_SUN50I_H616_MR14
+	hex "H616 DRAM MR14 parameter"
+	default 0x0
+	help
+	  MR14 value from vendor DRAM settings.
+
+config DRAM_SUN50I_H616_MR22
+	hex "H616 DRAM MR22 parameter"
+	default 0x0
+	help
+	  MR22 value from vendor DRAM settings.
 endif
 
 config SUN6I_PRCM

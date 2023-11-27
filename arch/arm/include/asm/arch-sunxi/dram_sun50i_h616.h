@@ -159,6 +159,12 @@ struct dram_para {
 	u32 tpr10;
 	u32 tpr11;
 	u32 tpr12;
+	u32 tpr13;
+	u32 mr3;
+	u32 mr11;
+	u32 mr12;
+	u32 mr14;
+	u32 mr22;
 };
 
 struct dram_config {
