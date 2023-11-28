@@ -250,8 +250,27 @@
 #define BOOTENV_DEV_NAME_FEL(devtypeu, devtypel, instance) \
 	"fel "
 
+#define BOOT_PARTITION "boot"
+#define BOOTENV_DEV_SYSTEM(devtypeu, devtypel, instance) \
+	"bootcmd_system=" \
+		"echo Loading Android " BOOT_PARTITION " partition...;" \
+		"mmc dev ${mmc_bootdev};" \
+		"setenv bootargs 'earlyprintk=sunxi-uart,0x05000000 initcall_debug=0 console=ttyS0,115200 loglevel=8 root=/dev/mmcblk1p5 init=/init';" \
+		"part start mmc ${mmc_bootdev} " BOOT_PARTITION " boot_start;" \
+		"part size mmc ${mmc_bootdev} " BOOT_PARTITION " boot_size;" \
+		"if mmc read ${loadaddr} ${boot_start} ${boot_size}; then " \
+			"echo Running Android...;" \
+            "abootimg get dtb --index=0 fdtaddr;" \
+            "bootm $loadaddr $loadaddr $fdtaddr;" \
+		"fi;" \
+		"echo Failed to boot Android...;\0"
+
+#define BOOTENV_DEV_NAME_SYSTEM(devtypeu, devtypel, instance)	\
+		"system "
+
 #define BOOT_TARGET_DEVICES(func) \
 	func(FEL, fel, na) \
+    func(SYSTEM, system, na) \
 	BOOT_TARGET_DEVICES_MMC(func) \
 	BOOT_TARGET_DEVICES_SCSI(func) \
 	BOOT_TARGET_DEVICES_USB(func) \

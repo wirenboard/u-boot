@@ -17,6 +17,8 @@
 
 	aliases {
 		serial0 = &uart0;
+        mmc1 = &mmc2;
+        mmc0 = &mmc0;
 	};
 
 	chosen {
@@ -58,6 +60,19 @@
     broken-cd;
 	bus-width = <4>;
 	status = "okay";
+};
+
+&mmc2 {
+	vmmc-supply = <&reg_dcdc1>;
+	vqmmc-supply = <&reg_aldo1>;
+	mmc-ddr-1_8v;
+	mmc-hs200-1_8v;
+	mmc-hs400-1_8v;
+	mmc-hs400-enhanced-strobe; // does not change anything on test board
+	no-sdio;
+	no-sd;
+    bus-width = <8>;
+    status = "okay";
 };
 
 &r_rsb {
