@@ -3,6 +3,7 @@
 #include <asm/arch/cpu.h>
 #include <asm/arch/clock.h>
 #include <asm/arch/prcm.h>
+#include <linux/delay.h>
 
 #ifdef CONFIG_SPL_BUILD
 void clock_init_safe(void)
@@ -31,7 +32,7 @@ void clock_init_safe(void)
 		setbits_le32(&prcm->pll_ldo_cfg, 0x60000);
 	}
 
-	clock_set_pll1(408000000);
+	clock_set_pll1(408000000);  // 984 MHz in boot0
 
 	writel(CCM_PLL6_DEFAULT, &ccm->pll6_cfg);
 	while (!(readl(&ccm->pll6_cfg) & CCM_PLL6_LOCK))
@@ -51,6 +52,25 @@ void clock_init_safe(void)
 	 * DRAM initialization code.
 	 */
 	writel(MBUS_CLK_SRC_PLL6X2 | MBUS_CLK_M(3), &ccm->mbus_cfg);
+
+    /*
+     * Enable all periph clocks, SDK kernel wants them all enabled.
+     */
+    udelay(10);
+    setbits_le32(&ccm->pll_periph1_cfg, 0x80000000);
+    udelay(10);
+    setbits_le32(&ccm->pll7_cfg, 0x80000000);
+    udelay(10);
+    setbits_le32(&ccm->pll3_cfg, 0x80000000);
+    udelay(10);
+    setbits_le32(&ccm->pll_video1_cfg, 0x80000000);
+    udelay(10);
+    setbits_le32(&ccm->pll4_cfg, 0x80000000);
+    udelay(10);
+    setbits_le32(&ccm->pll10_cfg, 0x80000000);
+    udelay(10);
+    setbits_le32(&ccm->pll2_cfg, 0x80000000);
+    udelay(10);
 }
 #endif
 
