@@ -5,6 +5,8 @@
  * (C) Copyright 2017      Icenowy Zheng <icenowy@aosc.io>
  *
  */
+#define LOG_DEBUG
+
 #include <common.h>
 #include <init.h>
 #include <log.h>

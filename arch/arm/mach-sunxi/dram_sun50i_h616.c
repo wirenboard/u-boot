@@ -12,6 +12,8 @@
  * (C) Copyright 2020 Jernej Skrabec <jernej.skrabec@siol.net>
  *
  */
+#define LOG_DEBUG
+
 #include <common.h>
 #include <init.h>
 #include <log.h>

@@ -10,6 +10,8 @@
  * Some board init for the Allwinner A10-evb board.
  */
 
+#define LOG_DEBUG
+
 #include <common.h>
 #include <clock_legacy.h>
 #include <dm.h>

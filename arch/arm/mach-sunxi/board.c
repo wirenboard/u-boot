@@ -9,6 +9,8 @@
  * Some init for sunxi platform.
  */
 
+#define LOG_DEBUG
+
 #include <common.h>
 #include <cpu_func.h>
 #include <init.h>

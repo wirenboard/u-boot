@@ -5,6 +5,8 @@
  * Tom Cubie <tangliang@allwinnertech.com>
  */
 
+#define LOG_DEBUG
+
 #include <common.h>
 #include <init.h>
 #include <asm/io.h>

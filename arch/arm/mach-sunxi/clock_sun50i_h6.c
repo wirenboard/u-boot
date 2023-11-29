@@ -1,3 +1,5 @@
+#define LOG_DEBUG
+
 #include <common.h>
 #include <asm/io.h>
 #include <asm/arch/cpu.h>

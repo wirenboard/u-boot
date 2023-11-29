@@ -9,6 +9,8 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
+#define LOG_DEBUG
+
 #include <common.h>
 #include <asm/arch/dram.h>
 #include <asm/arch/cpu.h>

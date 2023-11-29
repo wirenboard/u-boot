@@ -5,6 +5,8 @@
  * (C) Copyright 2015 Hans de Goede <hdegoede@redhat.com>
  */
 
+#define LOG_DEBUG
+
 #include <common.h>
 #include <time.h>
 #include <asm/barriers.h>

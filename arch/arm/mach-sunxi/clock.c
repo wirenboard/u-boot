@@ -7,6 +7,8 @@
  * (C) Copyright 2013 Luke Kenneth Casson Leighton <lkcl@lkcl.net>
  */
 
+#define LOG_DEBUG
+
 #include <common.h>
 #include <asm/io.h>
 #include <asm/arch/clock.h>
