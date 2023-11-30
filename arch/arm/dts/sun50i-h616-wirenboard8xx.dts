@@ -75,42 +75,22 @@
     status = "okay";
 };
 
-&r_rsb {
+&r_i2c {
 	status = "okay";
+    pinctrl-names = "default";
+    pinctrl-0 = <&r_i2c_pins>;
 
-	pmu0: pmu@36{
+	axp15060: pmic@36{
 		compatible = "x-powers,axp15060";
 		reg = <0x36>;
-		interrupt-parent = <&nmi_intc>;
-		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
 		interrupt-controller;
 		#interrupt-cells = <1>;
 
-		wakeup-source;
+        x-powers,self-working-mode;
 		overtemp_shutdown = <1>;
 		overtemp_value = <145>;
 
-		powerkey0: powerkey@0{
-			status = "okay";
-			compatible = "x-powers,axp2101-pek";
-			pmu_powkey_off_time = <6000>;
-			pmu_powkey_off_func = <0>;
-			pmu_powkey_off_en = <1>;
-			pmu_powkey_long_time = <1500>;
-			pmu_powkey_on_time = <1000>;
-			wakeup_rising;
-			wakeup_falling;
-		};
-
-		standby_param: standby_param {
-			vcc-io = <0x1>;
-			vdd-cpua = <0x2>;
-			vdd-sys = <0x4>;
-			vdd-res1 = <0x40>;
-			vcc-pll = <0x80>;
-		};
-
-		regulator0: regulators{
+		regulators {
 			reg_dcdc1: dcdc1 {
 				regulator-name = "axp858-dcdc1";
 				regulator-min-microvolt = <1500000>;
@@ -300,7 +280,7 @@
 			reg_sw: sw {
 				regulator-name = "axp858-sw";
                 regulator-always-on;
-			};
+            };
 		};
 	};
 };
