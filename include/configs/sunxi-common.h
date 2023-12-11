@@ -255,7 +255,7 @@
 	"bootcmd_system=" \
 		"echo Loading Android " BOOT_PARTITION " partition...;" \
 		"mmc dev ${mmc_bootdev};" \
-		"setenv bootargs 'earlyprintk=sunxi-uart,0x05000000 initcall_debug=0 console=ttyS0,115200 loglevel=8 root=/dev/mmcblk1p5 init=/init';" \
+		"setenv bootargs 'earlyprintk=sunxi-uart,0x05000000 initcall_debug=0 console=ttyS0,115200 loglevel=8 root=/dev/mmcblk1p5 init=/init systemd.log_level=debug systemd.log_target=console';" \
 		"part start mmc ${mmc_bootdev} " BOOT_PARTITION " boot_start;" \
 		"part size mmc ${mmc_bootdev} " BOOT_PARTITION " boot_size;" \
 		"if mmc read ${loadaddr} ${boot_start} ${boot_size}; then " \
