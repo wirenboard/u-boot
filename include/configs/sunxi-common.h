@@ -255,7 +255,7 @@
 	"bootcmd_system=" \
 		"echo Loading Android " BOOT_PARTITION " partition...;" \
 		"mmc dev ${mmc_bootdev};" \
-		"setenv bootargs 'earlyprintk=sunxi-uart,0x05000000 initcall_debug=0 console=ttyS0,115200 loglevel=8 root=/dev/mmcblk1p5 init=/init systemd.log_level=debug systemd.log_target=console' mem=1G;" \
+		"setenv bootargs 'earlyprintk=sunxi-uart,0x05000000 initcall_debug=0 console=ttyS0,115200 loglevel=8 root=/dev/mmcblk1p5 init=/init systemd.log_level=debug systemd.log_target=console' ;" \
 		"part start mmc ${mmc_bootdev} " BOOT_PARTITION " boot_start;" \
 		"part size mmc ${mmc_bootdev} " BOOT_PARTITION " boot_size;" \
 		"if mmc read ${loadaddr} ${boot_start} ${boot_size}; then " \
@@ -268,8 +268,21 @@
 #define BOOTENV_DEV_NAME_SYSTEM(devtypeu, devtypel, instance)	\
 		"system "
 
+
+#define BOOTENV_DEV_IMAGE(devtypeu, devtypel, instance) \
+    "bootcmd_image=" \
+		"setenv bootargs 'console=ttyS0,115200 root=/dev/mmcblk1p5' rootwait rw ;" \
+        "echo Loading kernel...;" \
+        "load mmc 0:5 0x42000000 /boot/Image;" \
+        "load mmc 0:5 0x44000000 /boot/boot.dtb;" \
+        "booti 0x42000000 - 0x44000000;\0"
+#define BOOTENV_DEV_NAME_IMAGE(devtypeu, devtypel, instance) \
+    "image "
+
+
 #define BOOT_TARGET_DEVICES(func) \
 	func(FEL, fel, na) \
+    func(IMAGE, image, na) \
     func(SYSTEM, system, na) \
 	BOOT_TARGET_DEVICES_MMC(func) \
 	BOOT_TARGET_DEVICES_SCSI(func) \
