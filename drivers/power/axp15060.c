@@ -95,7 +95,7 @@ int axp_set_dcdc4(unsigned int mvolt)
 		return pmic_bus_clrbits(AXP15060_OUTPUT_CTRL1,
 					AXP15060_OUTPUT_CTRL1_DCDC4_EN);
 
-	ret = pmic_bus_write(AXP15060_DCDC5_CTRL, cfg);
+	ret = pmic_bus_write(AXP15060_DCDC4_CTRL, cfg);
 	if (ret)
 		return ret;
 
