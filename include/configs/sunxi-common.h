@@ -274,8 +274,8 @@
 		"setenv bootargs 'console=ttyS0,115200 root=/dev/mmcblk1p5' rootwait rw ;" \
         "echo Loading kernel...;" \
         "load mmc 0:5 0x42000000 /boot/Image;" \
-        "load mmc 0:5 0x44000000 /boot/boot.dtb;" \
-        "booti 0x42000000 - 0x44000000;\0"
+        "load mmc 0:5 0x48000000 /boot/boot.dtb;" \
+        "booti 0x42000000 - 0x48000000;\0"
 #define BOOTENV_DEV_NAME_IMAGE(devtypeu, devtypel, instance) \
     "image "
 
